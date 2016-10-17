@@ -13,9 +13,14 @@ def home_page():
     now = datetime.datetime.now()
     return render_template('home.html', current_time=now.ctime())
 
-@app.route('/mustafa')
-def mustafa():
-    return render_template('mustafa.html')
+@app.route('/profile')
+def profile_page():
+    return render_template('profile.html')
+
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
+
 
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')

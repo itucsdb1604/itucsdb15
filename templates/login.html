@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+	<form role="form" action="" method="post" name="username" class="form-→horizontal">
+		<div class="form-group">
+			<label for="title" class="control-label col-sm-1">Username:</label>
+			<div class="col-sm-11">
+				<input type="text" name="title"  />
+			</div>
+		</div>
+	</form>
+	
+	<div class="form-group">
+		<label for="password" class="control-label col-sm-1">Password:</label>
+			<div class="col-sm-3">
+				<input type="password" name="password" size="4" />
+			</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-sm-1"></div>
+			<button type="submit" name="login" class="btn btn-primary">Log In</button>
+	</div>
+   
+   <footer>
+     <div id="datetime">{{ current_time }}</div>
+   </footer>
+{% endblock %}

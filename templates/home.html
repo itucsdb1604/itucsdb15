@@ -1,23 +1,10 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-  </head>
-  <body>
-    <h1>Hello, im Sergen</h1>
-   	<a href="{{url_for('mustafa')}}">
-		<button type="button" class="btn btn-primary">Hello, im Mustafa</button>
-	</a>
-    <h1>Hello, im Uf</h1>
-    <h1>Hello, im U</h1>
-    <h1>Hello, im taha</h1>
-    <h1>>Hello, im Tolga </h1>
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
 
-    <footer>
-      <div id="datetime">{{ current_time }}</div>
-    </footer>
-  </body>
-</html>
+	<h1>This is the home page</h1>
+   
+   <footer>
+     <div id="datetime">{{ current_time }}</div>
+   </footer>
+{% endblock %}
