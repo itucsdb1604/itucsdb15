@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+    	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<title>IBDB - {% block title %}{% endblock %}</title>
+
+		<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}" />
+    	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+	</head>
+	<body>
+	    <nav class="navbar navbar-inverse navbar-fixed-top">
+	    	<ul>
+	    		<li>
+	    			this is gonna be a list
+	    		</li>
+	    	</ul>
+	    </nav>
+	</body>
+	<div class="container-fluid" role="main">
+      {% block content %}{% endblock %}
+    </div>
+	<a href="{{url_for('home_page')}}">
+		<button type="button" class="btn btn-warning">Home</button>
+	</a>
+</html>
