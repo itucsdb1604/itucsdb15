@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+
+	<form role="form" action="" method="post" name="username" class="form-→horizontal">
+
+		<div class="form-group">
+			<label for="name" class="control-label col-md-2">Your Name:</label>
+				<div class="col-md-10">
+					<input type="text" name="name"/>
+				</div>
+		</div>
+
+		<div class="form-group">
+			<label for="location" class="control-label col-md-2">Location:</label>
+				<div class="col-md-10">
+					<input type="text" name="location"/>
+				</div>
+		</div>
+		<div class="form-group">
+			<label for="birthday" class="control-label col-md-2">Birth:</label>
+				<div class="col-md-10">
+					<input type="text" name="birth"/>
+				</div>
+		</div>
+		<div class="form-group">
+			<label for="title" class="control-label col-md-2">Username:</label>
+			<div class="col-md-10">
+				<input type="text" name="title"  />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="password" class="control-label col-md-2">Password:</label>
+				<div class="col-md-10">
+					<input type="password" name="password" size="8" />
+				</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-md-2"></div>
+				<button type="submit" name="login" class="btn btn-primary">Log In</button>
+		</div>
+	</form>
+
+   <footer>
+     <div id="datetime">{{ current_time }}</div>
+   </footer>
+{% endblock %}
