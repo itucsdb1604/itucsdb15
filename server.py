@@ -21,6 +21,10 @@ def profile_page():
 def timeline_page():
     return render_template('timeline.html')
 
+@app.route('/help')
+def help_page():
+    return render_template('help.html')
+
 @app.route('/login')
 def login_page():
     return render_template('login.html')
