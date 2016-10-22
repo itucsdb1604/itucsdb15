@@ -1,18 +1,70 @@
 {% extends "layout.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-
-	<div class="container">
-		<div class="jumbotron">
-			<h1>IBDB</h1>
-			<h3>Your Library</h3>
-			<br/>
-			<p>
-				This is the most popular site in the world.
-			</p>
+	<br/><br/>
+	<div class="container-fluid">
+		<div class="col-sm-8">
+			<div class="well">
+				<h1>IBDB</h1>
+				<h3>Your Library</h3>
+				<br/>
+				<p> 
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+					Vivamus nec interdum magna. Sed hendrerit mauris et libero 
+					luctus, at dignissim ipsum rhoncus. Mauris nulla velit, 
+					rhoncus ac nibh sed, placerat congue risus. Aliquam eget 
+					felis a ex imperdiet ultricies at vestibulum libero. Aliquam 
+					erat volutpat. Maecenas aliquet ultrices libero nec varius. 
+					Sed pellentesque justo non purus porttitor, in eleifend mauris 
+					lacinia. Morbi quam eros, gravida quis eros vel, venenatis 
+					elementum odio.
+				</p>
+				<p> 
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+					Vivamus nec interdum magna. Sed hendrerit mauris et libero 
+					luctus, at dignissim ipsum rhoncus. Mauris nulla velit, 
+					rhoncus ac nibh sed, placerat congue risus. Aliquam eget 
+					felis a ex imperdiet ultricies at vestibulum libero. Aliquam 
+					erat volutpat. Maecenas aliquet ultrices libero nec varius. 
+					Sed pellentesque justo non purus porttitor, in eleifend mauris 
+					lacinia. Morbi quam eros, gravida quis eros vel, venenatis 
+					elementum odio.
+				</p>
+				<h3>Second Header</h3>
+				<p> 
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+					Vivamus nec interdum magna. Sed hendrerit mauris et libero 
+					luctus, at dignissim ipsum rhoncus. Mauris nulla velit, 
+					rhoncus ac nibh sed, placerat congue risus. Aliquam eget 
+					felis a ex imperdiet ultricies at vestibulum libero. Aliquam 
+					erat volutpat. Maecenas aliquet ultrices libero nec varius. 
+					Sed pellentesque justo non purus porttitor, in eleifend mauris 
+					lacinia. Morbi quam eros, gravida quis eros vel, venenatis 
+					elementum odio.
+				</p>
+			</div>
+		</div>
+		<div class="col-sm-4">
+			<div class="well">
+				<h1>ANNOUNCEMENTS</h1>
+				<ul class="list-group">
+					<li class="list-group-item">
+						<h3><a href="#">1. Announcement</a></h3>
+						<p>There is going to be the contents of the first announcement.</p>
+					</li>
+					<li class="list-group-item">
+						<h3><a href="#">2. Announcement</a></h3>
+						<p>There is going to be the contents of the second announcement.</p>
+					</li>
+					<li class="list-group-item">
+						<h3><a href="#">3. Announcement</a></h3>
+						<p>There is going to be the contents of the third announcement.</p>
+					</li>
+				</ul>
+			</div>
 		</div>
 	</div>
-   
+
    <footer>
      <div id="datetime">{{ current_time }}</div>
    </footer>

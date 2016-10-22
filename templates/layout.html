@@ -12,7 +12,7 @@
     	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 	</head>
 	<body>
-	    <nav class="navbar navbar-inverse">
+	    <nav class="navbar navbar-inverse navbar-fixed-top">
   			<div class="container-fluid">
     			<div class="navbar-header">
       				<a class="navbar-brand" href="#">IBDB</a>
@@ -33,7 +33,4 @@
 	<div class="container-fluid" role="main">
       {% block content %}{% endblock %}
     </div>
-	<a href="{{url_for('home_page')}}">
-		<button type="button" class="btn btn-warning">Home</button>
-	</a>
 </html>
