@@ -27,11 +27,11 @@ def get_elephantsql_dsn(vcap_services):
 def home_page():
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
-        
+
         query = "SELECT * FROM ANNOUNCEMENTS"
         cursor.execute(query)
         connection.commit()
-        
+
     return render_template('home.html', announcements = cursor.fetchall())
 
 @app.route('/initdb')
@@ -47,30 +47,30 @@ def initialize_database():
 
         query = """INSERT INTO COUNTER (N) VALUES (0)"""
         cursor.execute(query)
-        
+
         query = """DROP TABLE IF EXISTS ANNOUNCEMENTS"""
         cursor.execute(query)
-        
+
         query = """CREATE TABLE ANNOUNCEMENTS (ID INTEGER, CONTENT VARCHAR(200))"""
         cursor.execute(query)
-        
+
         query = """INSERT INTO ANNOUNCEMENTS VALUES (1, 'This is the first Announcement')"""
         cursor.execute(query)
-        
+
         query = """INSERT INTO ANNOUNCEMENTS VALUES (2, 'This is the second Announcement')"""
         cursor.execute(query)
-        
+
         query = """INSERT INTO ANNOUNCEMENTS VALUES (3, 'This is the third Announcement')"""
         cursor.execute(query)
-        
+
         query = """INSERT INTO ANNOUNCEMENTS VALUES (4, 'This is the fourth Announcement')"""
         cursor.execute(query)
-        
+
         #This Insert query is temporary
-        #It will be corrected in the following commits        
+        #It will be corrected in the following commits
         query = """DROP TABLE IF EXISTS read_list"""
         cursor.execute(query)
-        
+
         #Creating the readlist table
         query = """
                     CREATE TABLE read_list(
@@ -81,16 +81,26 @@ def initialize_database():
                 """
         cursor.execute(query)
         #Creating the readlist table
-        
+
         query = """DROP TABLE IF EXISTS WRITER"""
         cursor.execute(query)
 
-        query = """CREATE TABLE WRITER 
+        query = """CREATE TABLE WRITER
                         (Name VARCHAR(255),
                         OLD INTEGER,
                         MOST_POPULAR_BOOK VARCHAR(255))"""
         cursor.execute(query)
-        
+
+        query = """DROP TABLE IF EXISTS users"""
+        cursor.execute(query)
+        query = """CREATE TABLE users(
+                    name VARCHAR(30),
+                    location VARCHAR(20),
+                    birthday VARCHAR(8),
+                    username VARCHAR(20) PRIMARY KEY,
+                    password VARCHAR(20) NOT NULL )"""
+        cursor.execute(query)
+
         connection.commit()
     return redirect(url_for('home_page'))
 
@@ -112,7 +122,7 @@ def counter_page():
 def profile_page():
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
-        
+
         #This Insert query is temporary
         #It will be corrected in the following commits
         query = """
@@ -127,12 +137,12 @@ def profile_page():
 def timeline_page():
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
-        
-        query = """INSERT INTO WRITER VALUES 
-                        ('NAZIM HIKMET', 60, 
+
+        query = """INSERT INTO WRITER VALUES
+                        ('NAZIM HIKMET', 60,
                         'PIRAYEYE MEKTUPLAR')"""
         cursor.execute(query)
-        
+
     connection.commit()
     return render_template('timeline.html')
 
@@ -146,6 +156,13 @@ def login_page():
 
 @app.route('/signup')
 def signup_page():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+
+        query = """INSERT INTO users VALUES('Taha', 'istanbul', '20121994', 'tahacorbaci' , '12345')"""
+        cursor.execute(query)
+
+    connection.commit()
     return render_template('signup.html')
 
 if __name__ == '__main__':
@@ -154,13 +171,13 @@ if __name__ == '__main__':
         port, debug = int(VCAP_APP_PORT), False
     else:
         port, debug = 5000, True
-        
-    
+
+
         VCAP_SERVICES = os.getenv('VCAP_SERVICES')
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
         app.config['dsn'] = """user='vagrant' password='vagrant'
                                host='localhost' port=5432 dbname='itucsdb'"""
-                               
+
     app.run(host='0.0.0.0', port=port, debug=debug)
