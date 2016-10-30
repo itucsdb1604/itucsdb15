@@ -81,7 +81,16 @@ def initialize_database():
                 """
         cursor.execute(query)
         #Creating the readlist table
+        
+        query = """DROP TABLE IF EXISTS WRITER"""
+        cursor.execute(query)
 
+        query = """CREATE TABLE WRITER 
+                        (Name VARCHAR(255),
+                        OLD INTEGER,
+                        MOST_POPULAR_BOOK VARCHAR(255))"""
+        cursor.execute(query)
+        
         connection.commit()
     return redirect(url_for('home_page'))
 
@@ -116,6 +125,15 @@ def profile_page():
 
 @app.route('/timeline')
 def timeline_page():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        
+        query = """INSERT INTO WRITER VALUES 
+                        ('NAZIM HIKMET', 60, 
+                        'PIRAYEYE MEKTUPLAR')"""
+        cursor.execute(query)
+        
+    connection.commit()
     return render_template('timeline.html')
 
 @app.route('/help')
@@ -142,7 +160,7 @@ if __name__ == '__main__':
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
-        app.config['dsn'] = """user='postgres' password='Hidlrow3427'
+        app.config['dsn'] = """user='vagrant' password='vagrant'
                                host='localhost' port=5432 dbname='itucsdb'"""
                                
     app.run(host='0.0.0.0', port=port, debug=debug)
