@@ -10,7 +10,6 @@ from flask import redirect
 from flask import render_template
 from flask.helpers import url_for
 
-
 app = Flask(__name__)
 
 def get_elephantsql_dsn(vcap_services):
@@ -26,8 +25,14 @@ def get_elephantsql_dsn(vcap_services):
 
 @app.route('/')
 def home_page():
-    now = datetime.datetime.now()
-    return render_template('home.html', current_time=now.ctime())
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        
+        query = "SELECT * FROM ANNOUNCEMENTS"
+        cursor.execute(query)
+        connection.commit()
+        
+    return render_template('home.html', announcements = cursor.fetchall())
 
 @app.route('/initdb')
 def initialize_database():
@@ -41,6 +46,24 @@ def initialize_database():
         cursor.execute(query)
 
         query = """INSERT INTO COUNTER (N) VALUES (0)"""
+        cursor.execute(query)
+        
+        query = """DROP TABLE IF EXISTS ANNOUNCEMENTS"""
+        cursor.execute(query)
+        
+        query = """CREATE TABLE ANNOUNCEMENTS (ID INTEGER, CONTENT VARCHAR(200))"""
+        cursor.execute(query)
+        
+        query = """INSERT INTO ANNOUNCEMENTS VALUES (1, 'This is the first Announcement')"""
+        cursor.execute(query)
+        
+        query = """INSERT INTO ANNOUNCEMENTS VALUES (2, 'This is the second Announcement')"""
+        cursor.execute(query)
+        
+        query = """INSERT INTO ANNOUNCEMENTS VALUES (3, 'This is the third Announcement')"""
+        cursor.execute(query)
+        
+        query = """INSERT INTO ANNOUNCEMENTS VALUES (4, 'This is the fourth Announcement')"""
         cursor.execute(query)
 
         connection.commit()
@@ -88,7 +111,7 @@ if __name__ == '__main__':
         port, debug = 5000, True
         
     
-    VCAP_SERVICES = os.getenv('VCAP_SERVICES')
+        VCAP_SERVICES = os.getenv('VCAP_SERVICES')
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:

@@ -3,7 +3,7 @@
 {% block content %}
 	<br/><br/>
 	<div class="container-fluid">
-		<div class="col-sm-8">
+		<div class="col-sm-9">
 			<div class="well">
 				<h1>IBDB</h1>
 				<h3>Your Library</h3>
@@ -44,28 +44,18 @@
 				</p>
 			</div>
 		</div>
-		<div class="col-sm-4">
+		<div class="col-sm-3">
 			<div class="well">
-				<h1>ANNOUNCEMENTS</h1>
+				<h3>ANNOUNCEMENTS</h3>
 				<ul class="list-group">
-					<li class="list-group-item">
-						<h3><a href="#">1. Announcement</a></h3>
-						<p>There is going to be the contents of the first announcement.</p>
-					</li>
-					<li class="list-group-item">
-						<h3><a href="#">2. Announcement</a></h3>
-						<p>There is going to be the contents of the second announcement.</p>
-					</li>
-					<li class="list-group-item">
-						<h3><a href="#">3. Announcement</a></h3>
-						<p>There is going to be the contents of the third announcement.</p>
-					</li>
+					{% for announcement in announcements %}
+						<li class="list-group-item">
+							<h4><a href="#">{{ announcement[0] }}. Announcement</a></h4>
+							<p>{{ announcement[1] }}</p>
+						</li>
+					{% endfor %}
 				</ul>
 			</div>
 		</div>
 	</div>
-
-   <footer>
-     <div id="datetime">{{ current_time }}</div>
-   </footer>
 {% endblock %}
