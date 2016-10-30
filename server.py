@@ -97,7 +97,7 @@ def initialize_database():
                     name VARCHAR(30),
                     location VARCHAR(20),
                     birthday VARCHAR(8),
-                    username VARCHAR(20) PRIMARY KEY,
+                    username VARCHAR(20) NOT NULL,
                     password VARCHAR(20) NOT NULL )"""
         cursor.execute(query)
 
