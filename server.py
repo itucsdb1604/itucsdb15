@@ -101,6 +101,28 @@ def initialize_database():
                     password VARCHAR(20) NOT NULL )"""
         cursor.execute(query)
 
+        #initialize the book table
+        query = """DROP TABLE IF EXISTS BOOK"""
+        cursor.execute(query)
+
+        #Creating the book table
+        query = """CREATE TABLE IF NOT EXISTS BOOK
+            (
+                id int,
+                title varchar(60),
+                isbn varchar(20),
+                edition int
+            )
+        """
+        cursor.execute(query)
+
+        query = """INSERT INTO BOOK VALUES (1,'Tutunamayanlar','1234-5678-910',1)"""
+        cursor.execute(query)
+        query = """INSERT INTO BOOK VALUES (2,'Korkuyu Beklerken','1234-5678-911',1)"""
+        cursor.execute(query)
+        query = """INSERT INTO BOOK VALUES (3,'Tehlikeli Oyunlar','1234-5678-912',1)"""
+        cursor.execute(query)
+
         connection.commit()
     return redirect(url_for('home_page'))
 
@@ -177,7 +199,7 @@ if __name__ == '__main__':
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
-        app.config['dsn'] = """user='vagrant' password='vagrant'
+        app.config['dsn'] = """user='postgres' password='1234'
                                host='localhost' port=5432 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)
