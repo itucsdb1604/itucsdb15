@@ -65,6 +65,22 @@ def initialize_database():
         
         query = """INSERT INTO ANNOUNCEMENTS VALUES (4, 'This is the fourth Announcement')"""
         cursor.execute(query)
+        
+        #This Insert query is temporary
+        #It will be corrected in the following commits        
+        query = """DROP TABLE IF EXISTS read_list"""
+        cursor.execute(query)
+        
+        #Creating the readlist table
+        query = """
+                    CREATE TABLE read_list(
+                        book_id int,
+                        book_name varchar,
+                        pages int
+                        );
+                """
+        cursor.execute(query)
+        #Creating the readlist table
 
         connection.commit()
     return redirect(url_for('home_page'))
@@ -85,6 +101,17 @@ def counter_page():
 
 @app.route('/profile')
 def profile_page():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        
+        #This Insert query is temporary
+        #It will be corrected in the following commits
+        query = """
+                    INSERT INTO read_list(book_id, book_name, pages)
+                    VALUES(1, 'Test Book', 216);
+                """
+        cursor.execute(query)
+        connection.commit()
     return render_template('profile.html')
 
 @app.route('/timeline')
@@ -115,7 +142,7 @@ if __name__ == '__main__':
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
-        app.config['dsn'] = """user='vagrant' password='vagrant'
+        app.config['dsn'] = """user='postgres' password='Hidlrow3427'
                                host='localhost' port=5432 dbname='itucsdb'"""
                                
     app.run(host='0.0.0.0', port=port, debug=debug)
