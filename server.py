@@ -9,8 +9,12 @@ from flask import Flask
 from flask import redirect
 from flask import render_template
 from flask.helpers import url_for
+from flask.globals import request
 
 app = Flask(__name__)
+
+global i
+i = 0
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
@@ -39,19 +43,7 @@ def initialize_database():
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
 
-        query = """DROP TABLE IF EXISTS COUNTER"""
-        cursor.execute(query)
-
-        query = """CREATE TABLE COUNTER (N INTEGER)"""
-        cursor.execute(query)
-
-        query = """INSERT INTO COUNTER (N) VALUES (0)"""
-        cursor.execute(query)
-
-        query = """DROP TABLE IF EXISTS ANNOUNCEMENTS"""
-        cursor.execute(query)
-
-        query = """CREATE TABLE ANNOUNCEMENTS (ID INTEGER, CONTENT VARCHAR(200))"""
+        query = """CREATE TABLE IF NOT EXISTS ANNOUNCEMENTS (ID INTEGER, CONTENT VARCHAR(200))"""
         cursor.execute(query)
 
         query = """INSERT INTO ANNOUNCEMENTS VALUES (1, 'This is the first Announcement')"""
@@ -122,23 +114,17 @@ def initialize_database():
         cursor.execute(query)
         query = """INSERT INTO BOOK VALUES (3,'Tehlikeli Oyunlar','1234-5678-912',1)"""
         cursor.execute(query)
-
+        
+        #creating the massages table
+        query = """CREATE TABLE IF NOT EXISTS MESSAGES (
+            USER_NAME VARCHAR(20),
+            TEXT VARCHAR(120),
+            ID INTEGER
+        )"""
+        cursor.execute(query)
+       
         connection.commit()
     return redirect(url_for('home_page'))
-
-@app.route('/count')
-def counter_page():
-    with dbapi2.connect(app.config['dsn']) as connection:
-        cursor = connection.cursor()
-
-        query = "UPDATE COUNTER SET N = N + 1"
-        cursor.execute(query)
-        connection.commit()
-
-        query = "SELECT N FROM COUNTER"
-        cursor.execute(query)
-        count = cursor.fetchone()[0]
-    return "This page was accessed %d times." % count
 
 @app.route('/profile')
 def profile_page():
@@ -187,6 +173,31 @@ def signup_page():
     connection.commit()
     return render_template('signup.html')
 
+@app.route('/messages', methods=['GET', 'POST'])
+def message_board():
+    if request.method == 'GET':
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+    
+            query = "SELECT * FROM MESSAGES ORDER BY ID"
+            cursor.execute(query)
+            
+            connection.commit()
+        return render_template('messages.html', messages = cursor.fetchall())
+    else:
+        message = request.form['message']
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+            
+            global i
+    
+            query = "INSERT INTO MESSAGES VALUES('Admin', '%s', %d)" % (message, i)
+            cursor.execute(query)
+            i = i + 1
+            
+            connection.commit()
+        return redirect(url_for('message_board'))
+        
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')
     if VCAP_APP_PORT is not None:
@@ -199,7 +210,7 @@ if __name__ == '__main__':
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
-        app.config['dsn'] = """user='postgres' password='1234'
-                               host='localhost' port=5432 dbname='itucsdb'"""
+        app.config['dsn'] = """user='vagrant' password='vagrant'
+                               host='localhost' port=1234 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)
