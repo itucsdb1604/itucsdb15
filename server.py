@@ -282,6 +282,43 @@ def message_board():
                 connection.commit()
             return redirect(url_for('message_board'))
 
+global j
+j=4
+
+@app.route('/library', methods=['GET', 'POST'])
+def library_page():
+    if request.method == 'GET':
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+            query = "SELECT * FROM BOOK ORDER BY ID"
+            cursor.execute(query)
+
+            connection.commit()
+        return render_template('library.html',books = cursor.fetchall())
+
+
+    else:
+        title = request.form['title']
+        isbn = request.form['isbn']
+        edition = request.form['edition']
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+
+            global j
+            query = "INSERT INTO BOOK VALUES(%d, '%s', '%s','%s')" % (j,title,isbn,edition)
+            cursor.execute(query)
+
+            j=j+1;
+            connection.commit()
+        return redirect(url_for('library_page'))
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')
     if VCAP_APP_PORT is not None:
@@ -294,7 +331,7 @@ if __name__ == '__main__':
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
-        app.config['dsn'] = """user='vagrant' password='vagrant'
+        app.config['dsn'] = """user='postgres' password='1234'
                                host='localhost' port=5432 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)

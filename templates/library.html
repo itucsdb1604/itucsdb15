@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block title %}Library{% endblock %}
+{% block content %}
+<br>
+<br>
+<form role="form" action="" method="post" name="add_book" class="form-horizontal"class="form-horizontal">
+	<fieldset>
+
+		<!-- Form Name -->
+		<legend>Add Book</legend>
+
+		<!-- Text input-->
+		<div class="form-group">
+			<label class="col-md-4 control-label" for="textinput">Title</label>
+			<div class="col-md-4">
+				<input id="textinput" name="title" type="text" placeholder=""
+					class="form-control input-md">
+
+			</div>
+		</div>
+
+		<!-- Text input-->
+		<div class="form-group">
+			<label class="col-md-4 control-label" for="textinput">ISBN</label>
+			<div class="col-md-4">
+				<input id="textinput" name="isbn" type="text" placeholder=""
+					class="form-control input-md">
+
+			</div>
+		</div>
+
+		<!-- Text input-->
+		<div class="form-group">
+			<label class="col-md-4 control-label" for="textinput">Edition</label>
+			<div class="col-md-4">
+				<input id="textinput" name="edition" type="text" placeholder=""
+					class="form-control input-md">
+
+			</div>
+		</div>
+
+
+		<!-- Button -->
+		<div class="form-group">
+			<div class="col-md-offset-4 col-md-4">
+				<button type="submit" name="save" class="btn btn-success">ADD</button>
+			</div>
+		</div>
+
+	</fieldset>
+</form>
+	<ul>
+		<b style="color: #FFFFFF"> Book List </b>
+		<br>
+		{% for title in books %}
+			<b>-</b> <a style="color:#CC0000" href="{{ url_for('library_page', id=id )}}" title="Click for details">{{ title[1] }} </a><br>
+		{% endfor %}
+	</ul>
+
+
+
+
+
+{% endblock %}
