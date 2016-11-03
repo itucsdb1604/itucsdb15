@@ -1,0 +1,30 @@
+{% extends "layout.html" %} 
+{% block title %}Message Board{% endblock %}
+{% block content %}
+<br>
+<br>
+<div class="container">
+	<div class="well">
+		<form role="form" action="" method="post" name="message_add" class="form-horizontal">
+			<fieldset>
+				<!-- Form Name -->
+				<legend>Update Message</legend>
+				<!-- Textarea -->
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-8">
+						<label>Updated Message</label>
+					</div>
+					<div class="col-md-offset-4 col-md-4">
+						<textarea name="message" class="form-control" style="resize: vertical"></textarea>
+					</div>
+				</div>
+
+				<!-- Button -->
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">
+						<button type="submit" name="save" class="btn btn-success">Update</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+{% endblock %}

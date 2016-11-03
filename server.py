@@ -43,7 +43,10 @@ def initialize_database():
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
 
-        query = """CREATE TABLE IF NOT EXISTS ANNOUNCEMENTS (ID INTEGER, CONTENT VARCHAR(200))"""
+        query = """DROP TABLE IF EXISTS ANNOUNCEMENTS"""
+        cursor.execute(query)
+
+        query = """CREATE TABLE ANNOUNCEMENTS (ID INTEGER, CONTENT VARCHAR(200))"""
         cursor.execute(query)
 
         query = """INSERT INTO ANNOUNCEMENTS VALUES (1, 'This is the first Announcement')"""
@@ -119,7 +122,7 @@ def initialize_database():
         query = """CREATE TABLE IF NOT EXISTS MESSAGES (
             USER_NAME VARCHAR(20),
             TEXT VARCHAR(120),
-            ID INTEGER
+            ID INTEGER PRIMARY KEY
         )"""
         cursor.execute(query)
        
@@ -173,6 +176,24 @@ def signup_page():
     connection.commit()
     return render_template('signup.html')
 
+@app.route('/messages/edit<int:id>', methods=['GET', 'POST'])
+def message_edit(id):
+    if request.method == 'GET':
+        return render_template('message_edit.html')
+    else:
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+        
+            query = """
+            UPDATE MESSAGES
+                SET TEXT = '%s'
+                WHERE (ID = %d)
+            """ % (request.form['message'], id)
+            cursor.execute(query)
+                
+            connection.commit()
+        return redirect(url_for('message_board'))
+
 @app.route('/messages', methods=['GET', 'POST'])
 def message_board():
     if request.method == 'GET':
@@ -185,18 +206,30 @@ def message_board():
             connection.commit()
         return render_template('messages.html', messages = cursor.fetchall())
     else:
-        message = request.form['message']
-        with dbapi2.connect(app.config['dsn']) as connection:
-            cursor = connection.cursor()
-            
-            global i
-    
-            query = "INSERT INTO MESSAGES VALUES('Admin', '%s', %d)" % (message, i)
-            cursor.execute(query)
-            i = i + 1
-            
-            connection.commit()
-        return redirect(url_for('message_board'))
+        if 'add' in request.form:
+            message = request.form['message']
+            with dbapi2.connect(app.config['dsn']) as connection:
+                cursor = connection.cursor()
+                
+                global i
+        
+                query = "INSERT INTO MESSAGES VALUES('Admin', '%s', %d)" % (message, i)
+                cursor.execute(query)
+                i = i + 1
+                
+                connection.commit()
+            return redirect(url_for('message_board'))
+        else:
+            with dbapi2.connect(app.config['dsn']) as connection:
+                cursor = connection.cursor()
+                       
+                print(request.form['delete'])
+                       
+                query = "DELETE FROM MESSAGES WHERE(ID = %s)" % request.form['delete']
+                cursor.execute(query)
+                
+                connection.commit()
+            return redirect(url_for('message_board'))
         
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')

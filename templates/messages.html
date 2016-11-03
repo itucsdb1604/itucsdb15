@@ -22,7 +22,7 @@
 				<!-- Button -->
 				<div class="form-group">
 					<div class="col-md-offset-4 col-md-4">
-						<button type="submit" name="save" class="btn btn-success">Send</button>
+						<button type="submit" name="add" class="btn btn-success">Send</button>
 					</div>
 				</div>
 			</fieldset>
@@ -31,8 +31,39 @@
 			{% for message in messages %}
 			<li>
 				<div class="panel panel-default">
-					<div class="panel-heading">{{message[0]}}</div>
-					<div class="panel-body">{{message[1]}}</div>
+					<div class="panel-heading"><strong>{{message[0]}}</strong></div>
+					<div class="panel-body">
+						<div class="col-md-10">
+							<p>
+								{{message[1]}}
+							</p>
+						</div>
+						<div class="col-md-1">
+							<a href="{{url_for('message_edit', id=message[2])}}"><button class="btn btn-info">Update</button></a>
+						</div>
+						<div class="col-md-1">
+							<button class="btn btn-danger" data-toggle="modal" data-target="#myModal">Delete</button>
+							<div id="myModal" class="modal fade" role="dialog">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal">&times;</button>
+											<h4 class="modal-title">Are you sure?</h4>
+										</div>
+										<div class="modal-body">
+											<form role="form" action="" method="post" name="message_delete" class="form-horizontal">
+												<button type="submit" name="delete" value="{{message[2]}}" class="btn btn-danger btn-lg center-block">Yes</button>
+											</form>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default"
+												data-dismiss="modal">Cancel</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</li>
 			{% endfor %}
