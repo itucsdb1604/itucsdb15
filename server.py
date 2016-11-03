@@ -10,6 +10,8 @@ from flask import redirect
 from flask import render_template
 from flask.helpers import url_for
 from flask.globals import request
+from profilePageManager import *
+
 
 app = Flask(__name__)
 
@@ -132,20 +134,11 @@ def initialize_database():
         connection.commit()
     return redirect(url_for('home_page'))
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 def profile_page():
-    with dbapi2.connect(app.config['dsn']) as connection:
-        cursor = connection.cursor()
-
-        #This Insert query is temporary
-        #It will be corrected in the following commits
-        query = """
-                    INSERT INTO read_list(book_id, book_name, pages)
-                    VALUES(1, 'Test Book', 216);
-                """
-        cursor.execute(query)
-        connection.commit()
-    return render_template('profile.html')
+    bookList = handleReadList(request)
+    print(len(bookList))
+    return render_template('profile.html', books = bookList)
 
 @app.route('/timeline')
 def timeline_page():
