@@ -16,7 +16,6 @@ from profilePageManager import *
 app = Flask(__name__)
 
 global i
-i = 0
 global userID
 userID = 0
 global key
@@ -112,8 +111,13 @@ def initialize_database():
         query = """INSERT INTO BOOK VALUES (3,'Tehlikeli Oyunlar','1234-5678-912',1)"""
         cursor.execute(query)
 
+        global i 
+        i = 0
         #creating the massages table
-        query = """CREATE TABLE IF NOT EXISTS MESSAGES (
+        query = """DROP TABLE IF EXISTS MESSAGES"""
+        cursor.execute(query)
+        
+        query = """CREATE TABLE MESSAGES (
             USER_NAME VARCHAR(20),
             TEXT VARCHAR(120),
             ID INTEGER PRIMARY KEY
@@ -235,30 +239,31 @@ def message_board():
             connection.commit()
         return render_template('messages.html', messages = cursor.fetchall())
     else:
-        if 'add' in request.form:
-            message = request.form['message']
-            with dbapi2.connect(app.config['dsn']) as connection:
-                cursor = connection.cursor()
+        message = request.form['message']
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
 
-                global i
+            global i
 
-                query = "INSERT INTO MESSAGES VALUES('Admin', '%s', %d)" % (message, i)
-                cursor.execute(query)
-                i = i + 1
+            query = "INSERT INTO MESSAGES VALUES('Admin', '%s', %d)" % (message, i)
+            cursor.execute(query)
+            i = i + 1
 
-                connection.commit()
-            return redirect(url_for('message_board'))
-        else:
-            with dbapi2.connect(app.config['dsn']) as connection:
-                cursor = connection.cursor()
+            connection.commit()
+        return redirect(url_for('message_board'))
 
-                print(request.form['delete'])
+@app.route('/message/delete<int:id>', methods=['GET', 'POST'])
+def message_delete(id):
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
 
-                query = "DELETE FROM MESSAGES WHERE(ID = %s)" % request.form['delete']
-                cursor.execute(query)
+        query = "DELETE FROM MESSAGES WHERE(ID = %d)" % id
+        cursor.execute(query)
 
-                connection.commit()
-            return redirect(url_for('message_board'))
+        print(id)
+
+        connection.commit()
+    return redirect(url_for('message_board'))
 
 global j
 j=4
@@ -375,11 +380,6 @@ def writer_edit_page(key):
         connection.commit() 
         return redirect(url_for('writer_page', key=key))
 
-
-
-
-
-
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')
     if VCAP_APP_PORT is not None:
@@ -393,6 +393,6 @@ if __name__ == '__main__':
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
         app.config['dsn'] = """user='vagrant' password='vagrant'
-                               host='localhost' port=5432 dbname='itucsdb'"""
+                               host='localhost' port=1234 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)

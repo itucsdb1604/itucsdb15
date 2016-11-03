@@ -42,8 +42,8 @@
 							<a href="{{url_for('message_edit', id=message[2])}}"><button class="btn btn-info">Update</button></a>
 						</div>
 						<div class="col-md-1">
-							<button class="btn btn-danger" data-toggle="modal" data-target="#myModal">Delete</button>
-							<div id="myModal" class="modal fade" role="dialog">
+							<button class="btn btn-danger" data-toggle="modal" data-target="#myModal{{message[2]}}">Delete</button>
+							<div id="myModal{{message[2]}}" class="modal fade" role="dialog">
 								<div class="modal-dialog">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -51,9 +51,9 @@
 											<h4 class="modal-title">Are you sure?</h4>
 										</div>
 										<div class="modal-body">
-											<form role="form" action="" method="post" name="message_delete" class="form-horizontal">
-												<button type="submit" name="delete" value="{{message[2]}}" class="btn btn-danger btn-lg center-block">Yes</button>
-											</form>
+											<a href="{{url_for('message_delete', id=message[2])}}">
+												<button class="btn btn-danger btn-lg center-block">Yes</button>
+											</a>
 										</div>
 										<div class="modal-footer">
 											<button type="button" class="btn btn-default"
