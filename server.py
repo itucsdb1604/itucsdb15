@@ -49,6 +49,9 @@ def initialize_database():
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
 
+        query = """DROP TABLE IF EXISTS read_list"""
+        cursor.execute(query)
+        
         query = """DROP TABLE IF EXISTS ANNOUNCEMENTS"""
         cursor.execute(query)
 
