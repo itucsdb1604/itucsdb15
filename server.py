@@ -15,6 +15,8 @@ app = Flask(__name__)
 
 global i
 i = 0
+global userID
+userID = 0
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
@@ -86,9 +88,10 @@ def initialize_database():
                         MOST_POPULAR_BOOK VARCHAR(255))"""
         cursor.execute(query)
 
-        query = """DROP TABLE IF EXISTS users"""
+        query = """DROP TABLE IF EXISTS USERS"""
         cursor.execute(query)
-        query = """CREATE TABLE users(
+        query = """CREATE TABLE USERS(
+                    ID INTEGER PRIMARY KEY,
                     name VARCHAR(30),
                     location VARCHAR(20),
                     birthday VARCHAR(8),
@@ -117,7 +120,7 @@ def initialize_database():
         cursor.execute(query)
         query = """INSERT INTO BOOK VALUES (3,'Tehlikeli Oyunlar','1234-5678-912',1)"""
         cursor.execute(query)
-        
+
         #creating the massages table
         query = """CREATE TABLE IF NOT EXISTS MESSAGES (
             USER_NAME VARCHAR(20),
@@ -125,7 +128,7 @@ def initialize_database():
             ID INTEGER PRIMARY KEY
         )"""
         cursor.execute(query)
-       
+
         connection.commit()
     return redirect(url_for('home_page'))
 
@@ -165,16 +168,64 @@ def help_page():
 def login_page():
     return render_template('login.html')
 
-@app.route('/signup')
+@app.route('/signup', methods=['GET', 'POST'])
 def signup_page():
-    with dbapi2.connect(app.config['dsn']) as connection:
-        cursor = connection.cursor()
+    if request.method == 'GET':
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
 
-        query = """INSERT INTO users VALUES('Taha', 'istanbul', '20121994', 'tahacorbaci' , '12345')"""
-        cursor.execute(query)
+            query = "SELECT * FROM USERS ORDER BY ID"
+            cursor.execute(query)
 
-    connection.commit()
-    return render_template('signup.html')
+            connection.commit()
+        return render_template('signup.html', users = cursor.fetchall())
+    else:
+        if 'signup' in request.form:
+            name = request.form['name']
+            location = request.form['location']
+            birthday = request.form['birthday']
+            username = request.form['username']
+            password = request.form['password']
+            with dbapi2.connect(app.config['dsn']) as connection:
+                cursor = connection.cursor()
+                global userID
+                query = "INSERT INTO USERS VALUES('%d', '%s', '%s', '%s', '%s', '%s')" % (userID, name, location, birthday, username, password)
+                cursor.execute(query)
+                userID = userID + 1
+                connection.commit()
+            return redirect(url_for('signup_page'))
+        elif 'delete' in request.form:
+            with dbapi2.connect(app.config['dsn']) as connection:
+                cursor = connection.cursor()
+
+                print(request.form['delete'])
+
+                query = "DELETE FROM USERS WHERE(ID = %s)" % request.form['delete']
+                cursor.execute(query)
+
+                connection.commit()
+            return redirect(url_for('signup_page'))
+
+@app.route('/user/edit<int:userID>', methods=['GET', 'POST'])
+def user_edit(userID):
+    if request.method == 'GET':
+        return render_template('user_edit.html')
+    else:
+        name = request.form['name']
+        location = request.form['location']
+        birthday = request.form['birthday']
+        username = request.form['username']
+        password = request.form['password']
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+
+            query = """
+            UPDATE USERS
+                SET name = '%s', location = '%s', birthday = '%s', username = '%s', password = '%s' WHERE (ID = %d)
+            """ % (name, location, birthday, username, password, userID)
+            cursor.execute(query)
+            connection.commit()
+        return redirect(url_for('signup_page'))
 
 @app.route('/messages/edit<int:id>', methods=['GET', 'POST'])
 def message_edit(id):
@@ -183,14 +234,14 @@ def message_edit(id):
     else:
         with dbapi2.connect(app.config['dsn']) as connection:
             cursor = connection.cursor()
-        
+
             query = """
             UPDATE MESSAGES
                 SET TEXT = '%s'
                 WHERE (ID = %d)
             """ % (request.form['message'], id)
             cursor.execute(query)
-                
+
             connection.commit()
         return redirect(url_for('message_board'))
 
@@ -199,10 +250,10 @@ def message_board():
     if request.method == 'GET':
         with dbapi2.connect(app.config['dsn']) as connection:
             cursor = connection.cursor()
-    
+
             query = "SELECT * FROM MESSAGES ORDER BY ID"
             cursor.execute(query)
-            
+
             connection.commit()
         return render_template('messages.html', messages = cursor.fetchall())
     else:
@@ -210,27 +261,27 @@ def message_board():
             message = request.form['message']
             with dbapi2.connect(app.config['dsn']) as connection:
                 cursor = connection.cursor()
-                
+
                 global i
-        
+
                 query = "INSERT INTO MESSAGES VALUES('Admin', '%s', %d)" % (message, i)
                 cursor.execute(query)
                 i = i + 1
-                
+
                 connection.commit()
             return redirect(url_for('message_board'))
         else:
             with dbapi2.connect(app.config['dsn']) as connection:
                 cursor = connection.cursor()
-                       
+
                 print(request.form['delete'])
-                       
+
                 query = "DELETE FROM MESSAGES WHERE(ID = %s)" % request.form['delete']
                 cursor.execute(query)
-                
+
                 connection.commit()
             return redirect(url_for('message_board'))
-        
+
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')
     if VCAP_APP_PORT is not None:
@@ -244,6 +295,6 @@ if __name__ == '__main__':
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
         app.config['dsn'] = """user='vagrant' password='vagrant'
-                               host='localhost' port=1234 dbname='itucsdb'"""
+                               host='localhost' port=5432 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)

@@ -2,27 +2,40 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
-	<form role="form" action="" method="post" name="username" class="form-→horizontal">
-		<div class="form-group">
-			<label for="title" class="control-label col-sm-1">Username:</label>
-			<div class="col-sm-11">
-				<input type="text" name="title"  />
-			</div>
-		</div>
+	<form class="form-horizontal">
+<fieldset>
 
+<!-- Form Name -->
+<legend>Form Name</legend>
 
-	<div class="form-group">
-		<label for="password" class="control-label col-sm-1">Password:</label>
-			<div class="col-sm-3">
-				<input type="password" name="password" size="4" />
-			</div>
-	</div>
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Username</label>
+  <div class="col-md-4">
+  <input id="textinput" name="textinput" placeholder="username" class="form-control input-md" required="" type="text">
 
-	<div class="form-group">
-		<div class="col-sm-1"></div>
-			<button type="submit" name="login" class="btn btn-primary">Log In</button>
-	</div>
-   </form>
+  </div>
+</div>
+
+<!-- Password input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="passwordinput">Password</label>
+  <div class="col-md-4">
+    <input id="passwordinput" name="passwordinput" placeholder="password" class="form-control input-md" required="" type="password">
+
+  </div>
+</div>
+
+<!-- Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="login"></label>
+  <div class="col-md-4">
+    <button id="login" name="login" class="btn btn-primary">Login</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
    <footer>
      <div id="datetime">{{ current_time }}</div>
    </footer>

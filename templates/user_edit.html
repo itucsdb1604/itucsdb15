@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
-{% block title %}Sign Up{% endblock %}
+{% block title %}User Update{% endblock %}
 {% block content %}
 
-	<form role="form" action="" method="post" name="sign_up" class="form-horizontal">
+<form role="form" action="" method="post" name="user_edit" class="form-horizontal">
 	<fieldset>
 
 	<!-- Form Name -->
-	<legend>Sign Up</legend>
+	<legend>Update User Information</legend>
 
 	<!-- Text input-->
 	<div class="form-group">
@@ -57,46 +57,10 @@
 	<div class="form-group">
 	  <label class="col-md-4 control-label" for="signup"></label>
 	  <div class="col-md-4">
-	    <button id="signup" name="signup" class="btn btn-primary">Sign Up</button>
+	    <button id="update" name="update" class="btn btn-primary">Update</button>
 	  </div>
 	</div>
 
 	</fieldset>
 	</form>
-
-		{% for user in users %}
-		 <div class="panel-group">
-		    <div class="panel panel-primary">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-				        <a data-toggle="collapse" href="#{{user[0]}}">User ID {{user[0]}}</a>
-				     </h4>
-				</div>
-				<div id={{user[0]}} class="panel-collapse collapse">
-					<div class="panel-body">{{user[1]}}</div>
-					<div class="panel-body">{{user[2]}}</div>
-					<div class="panel-body">{{user[3]}}</div>
-					<div class="panel-body">{{user[4]}}</div>
-					<div class="panel-body">
-						<!-- Button (Double) -->
-						<div class="form-group">
-						  <label class="col-md-4 control-label" for="button1id"></label>
-						  <div class="text-right">
-						    <a href="{{url_for('user_edit', userID=user[0])}}"><button id="button1id" name="button1id" class="btn btn-success">Update</button></a>
-						    <form role="form" action="" method="post" name="user_delete" class="form-horizontal">
-								<button type="submit" name="delete" value="{{user[0]}}" class="btn btn-danger">Delete</button>
-							</form>
-					  	</div>
-					  	</div>
-				</div>
-				</div>
-
-
-			</div>
-		</div>
-		{% endfor %}
-
-   <footer>
-     <div id="datetime">{{ current_time }}</div>
-   </footer>
 {% endblock %}
