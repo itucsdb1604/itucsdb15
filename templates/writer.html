@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}Writer{% endblock %}
+{% block content %}
+<div class="page-header">
+<h1>{{ writer[0] }}</h1>
+</div>
+
+<body>
+<div class="row">
+<div  class="col-sm-1">Age:</div>
+<div  class="col-sm-3">{{ writer[1] }}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-1"></div>
+<div class="col-sm-3">
+<a href="{{ request.path }}/edit" class="btn btn-primary">Edit</a>
+</div>
+</div>
+</body>
+{% endblock %}

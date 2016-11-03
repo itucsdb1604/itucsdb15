@@ -19,6 +19,8 @@ global i
 i = 0
 global userID
 userID = 0
+global key
+key = 0
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
@@ -81,13 +83,13 @@ def initialize_database():
         cursor.execute(query)
         #Creating the readlist table
 
-        query = """DROP TABLE IF EXISTS WRITER"""
+        query = """DROP TABLE IF EXISTS WRITERS"""
         cursor.execute(query)
 
-        query = """CREATE TABLE WRITER
-                        (Name VARCHAR(255),
-                        OLD INTEGER,
-                        MOST_POPULAR_BOOK VARCHAR(255))"""
+        query = """CREATE TABLE WRITERS
+                        (name VARCHAR(40),
+                        age VARCHAR(10),
+                        key INTEGER PRIMARY KEY)"""
         cursor.execute(query)
 
         query = """DROP TABLE IF EXISTS USERS"""
@@ -145,10 +147,6 @@ def timeline_page():
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
 
-        query = """INSERT INTO WRITER VALUES
-                        ('NAZIM HIKMET', 60,
-                        'PIRAYEYE MEKTUPLAR')"""
-        cursor.execute(query)
 
     connection.commit()
     return render_template('timeline.html')
@@ -306,6 +304,89 @@ def library_page():
         return redirect(url_for('library_page'))
 
 
+@app.route('/writers', methods=['GET', 'POST'])
+def writers_page():
+    if request.method == 'GET':
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+    
+            query = "SELECT * FROM WRITERS ORDER BY KEY"
+            cursor.execute(query)
+            
+            connection.commit()
+        return render_template('writers.html', writers = cursor.fetchall())
+    else:
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+            
+            deletes = request.form('writer_to_delete')
+            for delete in deletes:
+    
+                query = "DELETE FROM WRITERS WHERE KEY='%d'" %delete
+                cursor.execute(query)
+            
+            connection.commit()
+        return redirect(url_for('writers_page'), writers = cursor.fetchall())
+
+@app.route('/writer/<int:key>')
+def writer_page(key):
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+         
+    query = "SELECT * FROM WRITERS WHERE KEY ='%d'" %key
+    writer = cursor.execute(query)
+    
+    writers = cursor.fetchall()
+    for writer in writers:
+        if writer[2] == key:
+                return render_template('writer.html', writer = writer)
+    
+@app.route('/writers/add', methods=['GET', 'POST'])
+def writer_add_page():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        
+    if request.method == 'GET':
+        form = {'name', 'age'}
+        connection.commit() 
+        return render_template('writer_edit.html',form=form)
+    else:
+        name = request.form['name']
+        age = request.form['age']
+        
+        global key;
+        
+        key = key + 1
+       
+        query = "INSERT INTO WRITERS VALUES('%s', '%s', %d)" % (name, age, key)
+        cursor.execute(query)
+        
+        connection.commit() 
+        return redirect(url_for('writer_page',  key=key))
+    
+    
+@app.route('/writer/<int:key>/edit', methods=['GET', 'POST'])
+def writer_edit_page(key):
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        
+    query = "SELECT * FROM WRITERS WHERE KEY =key" 
+    cursor.execute(query)
+    
+    
+    if request.method == 'GET':
+        form = {'name', 'age'}
+        connection.commit() 
+        return render_template('writer_edit.html', form = form)
+    else:
+        name = request.form['name']
+        age = request.form['age']
+
+        query = "UPDATE WRITERS SET name= '%s', age='%s' WHERE KEY='%d'" % (name, age, key)
+        cursor.execute(query)
+        
+        connection.commit() 
+        return redirect(url_for('writer_page', key=key))
 
 
 
@@ -324,7 +405,7 @@ if __name__ == '__main__':
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
-        app.config['dsn'] = """user='postgres' password='1234'
+        app.config['dsn'] = """user='vagrant' password='vagrant'
                                host='localhost' port=5432 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)
