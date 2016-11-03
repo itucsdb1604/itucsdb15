@@ -70,22 +70,6 @@ def initialize_database():
         query = """INSERT INTO ANNOUNCEMENTS VALUES (4, 'This is the fourth Announcement')"""
         cursor.execute(query)
 
-        #This Insert query is temporary
-        #It will be corrected in the following commits
-        query = """DROP TABLE IF EXISTS read_list"""
-        cursor.execute(query)
-
-        #Creating the readlist table
-        query = """
-                    CREATE TABLE read_list(
-                        book_id int,
-                        book_name varchar,
-                        pages int
-                        );
-                """
-        cursor.execute(query)
-        #Creating the readlist table
-
         query = """DROP TABLE IF EXISTS WRITERS"""
         cursor.execute(query)
 
