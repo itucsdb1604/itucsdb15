@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Category Edit{% endblock %}
+{% block content %}
+<div class="page-header">
+	<h1>Add Category</h1>
+</div>
+
+<form role="form" action="" method="post" name="category_add" class="form-→horizontal">
+	
+	<div class="form-group">
+		<label for="name" class="control-label col-sm-1">Name:</label>
+		<div class="col-sm-11">
+			<input type="text" name="name" value="{{ form['name'] }}" class="form-control"" required autofocus />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="feature" class="control-label col-sm-1">Feature:</label>
+			<div class="col-sm-3">			
+				<select type="text" name="feature" value="{{ form['name'] }}" class="form-control"" >
+					<option value='classic'>Classic</option>
+					<option value='literary'>Literary</option>
+					<option value='scary'>Scary</option>
+					<option value='intriguing'>Intriguing</option>
+					<option value='other'>Other</option>
+				</select>
+			</div>
+	</div>
+
+<div class="form-group">
+	<div class="col-sm-1"></div>
+
+		<button type="submit" name="save" class="btn btn-primary">Save</button>
+	</div>
+
+</form>
+{% endblock %}

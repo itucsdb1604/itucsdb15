@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+<div class="page-header">
+<h1>{{ category[0] }}</h1>
+</div>
+
+<body>
+<div class="row">
+<div  class="col-sm-1">Feature:</div>
+<div  class="col-sm-3">{{ category[1] }}</div>
+</div>
+
+	<ul class="list-unstyled">
+	{% for writer in writers %}
+		{% if writer[3] == category[2] %}
+			<li>
+			<a href="{{ url_for('writer_page', key= writer[2]  )}}"> {{ writer[0] }} {{ writer[1] }} </a>
+			</li>
+		{% endif %}
+	{% endfor %}
+	
+	</ul>
+
+
+<div class="row">
+<div class="col-sm-1"></div>
+<div class="col-sm-3">
+<a href="{{ request.path }}/edit" class="btn btn-primary">Edit</a>
+</div>
+</div>
+</body>
+{% endblock %}

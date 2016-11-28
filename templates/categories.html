@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Category List{% endblock %}
+{% block content %}
+	<div class="page-header">
+	<h1>Categories</h1>
+	</div>
+
+<form role="form" action="" method="post" name="categories" class="form-horizontal">
+	<div class="row">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-3">
+	<a href="{{ request.path }}/add" class="btn btn-primary">Add Category</a>
+	</div>
+	</div>
+
+	
+	<ul class="list-unstyled">
+	{% for category in categories %}
+		<li>
+		<input type="checkbox" name="categories_to_delete" value=" {{ category[2] }} " />
+		<a href="{{ url_for('category_page', ckey= category[2]  )}}"> {{ category[0] }}  </a>
+		</li>
+	{% endfor %}
+	
+	</ul>
+
+	{% if categories %}
+		<button type="submit" name="delete" class="btn btn-primary">Delete</button>
+	{% endif %}
+</form>	
+	
+{% endblock %}

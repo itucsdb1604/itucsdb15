@@ -19,6 +19,8 @@ global userID
 userID = 0
 global key
 key = 0
+global ckey
+ckey = 0
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
@@ -70,12 +72,26 @@ def initialize_database():
 
         query = """DROP TABLE IF EXISTS WRITERS"""
         cursor.execute(query)
+        
+        query = """DROP TABLE IF EXISTS CATEGORIES"""
+        cursor.execute(query)
+        
+        
+        query = """CREATE TABLE CATEGORIES
+                        (name VARCHAR(40),
+                        feature VARCHAR(40),
+                        ckey INTEGER PRIMARY KEY)"""
+        cursor.execute(query)
+        
 
         query = """CREATE TABLE WRITERS
                         (name VARCHAR(40),
                         age VARCHAR(10),
-                        key INTEGER PRIMARY KEY)"""
+                        key INTEGER PRIMARY KEY,
+                        categoryid INTEGER, 
+                        FOREIGN KEY (categoryid) REFERENCES CATEGORIES (ckey))"""
         cursor.execute(query)
+        
 
         query = """DROP TABLE IF EXISTS USERS"""
         cursor.execute(query)
@@ -298,10 +314,10 @@ def writers_page():
         with dbapi2.connect(app.config['dsn']) as connection:
             cursor = connection.cursor()
             
-            deletes = request.form('writer_to_delete')
+            deletes = request.form.getlist('writers_to_delete')
             for delete in deletes:
     
-                query = "DELETE FROM WRITERS WHERE KEY='%d'" %delete
+                query = "DELETE FROM WRITERS WHERE KEY='%s'" %delete
                 cursor.execute(query)
             
             connection.commit()
@@ -313,7 +329,7 @@ def writer_page(key):
         cursor = connection.cursor()
          
     query = "SELECT * FROM WRITERS WHERE KEY ='%d'" %key
-    writer = cursor.execute(query)
+    cursor.execute(query)
     
     writers = cursor.fetchall()
     for writer in writers:
@@ -325,19 +341,23 @@ def writer_add_page():
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
         
+        query = "SELECT * FROM CATEGORIES ORDER BY CKEY"
+        cursor.execute(query) 
+        categories = cursor.fetchall()   
+        
     if request.method == 'GET':
-        form = {'name', 'age'}
+        form = {'name', 'age','categoryid'}
         connection.commit() 
-        return render_template('writer_edit.html',form=form)
+        return render_template('writer_edit.html',categories = categories,form=form)
     else:
         name = request.form['name']
         age = request.form['age']
-        
+        categoryid = int(request.form['categoryid'])
         global key;
         
         key = key + 1
-       
-        query = "INSERT INTO WRITERS VALUES('%s', '%s', %d)" % (name, age, key)
+      
+        query = "INSERT INTO WRITERS VALUES('%s', '%s', '%d', %d)" % (name, age, categoryid, key)
         cursor.execute(query)
         
         connection.commit() 
@@ -349,23 +369,117 @@ def writer_edit_page(key):
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
         
+    query = "SELECT * FROM CATEGORIES ORDER BY CKEY"
+    cursor.execute(query) 
+    categories = cursor.fetchall()   
+        
     query = "SELECT * FROM WRITERS WHERE KEY =key" 
     cursor.execute(query)
     
     
     if request.method == 'GET':
-        form = {'name', 'age'}
+        form = {'name', 'age', 'categoryid'}
         connection.commit() 
-        return render_template('writer_edit.html', form = form)
+        return render_template('writer_edit.html',categories = categories, form = form)
     else:
         name = request.form['name']
         age = request.form['age']
-
-        query = "UPDATE WRITERS SET name= '%s', age='%s' WHERE KEY='%d'" % (name, age, key)
+        categoryid = int(request.form['categoryid'])
+        
+        query = "UPDATE WRITERS SET name= '%s', age='%s',categoryid ='%d' WHERE KEY='%d'" % (name, age, categoryid, key)
         cursor.execute(query)
         
         connection.commit() 
         return redirect(url_for('writer_page', key=key))
+
+@app.route('/categories', methods=['GET', 'POST'])
+def categories_page():
+    if request.method == 'GET':
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+    
+            query = "SELECT * FROM CATEGORIES ORDER BY CKEY"
+            cursor.execute(query)
+            
+            connection.commit()
+        return render_template('categories.html', categories = cursor.fetchall())
+    else:
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+            
+            deletes = request.form.getlist('categories_to_delete')
+            for delete in deletes:
+    
+                query = "DELETE FROM CATEGORIES WHERE CKEY='%s'" %delete
+                cursor.execute(query)
+            
+            connection.commit()
+        return render_template('categories.html', categories = cursor.fetchall())
+
+@app.route('/category/<int:ckey>')
+def category_page(ckey):
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        
+        
+    query = "SELECT * FROM WRITERS ORDER BY KEY"
+    cursor.execute(query)   
+    writers = cursor.fetchall()
+         
+    query = "SELECT * FROM CATEGORIES WHERE CKEY ='%d'" %ckey
+    cursor.execute(query)
+    
+    categories = cursor.fetchall()
+    for category in categories:
+        if category[2] == ckey:
+                return render_template('category.html', writers = writers, category = category)
+    
+@app.route('/categories/add', methods=['GET', 'POST'])
+def category_add_page():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        
+    if request.method == 'GET':
+        form = {'name', 'feature'}
+        connection.commit() 
+        return render_template('category_edit.html',form=form)
+    else:
+        name = request.form['name']
+        feature = request.form['feature']
+        
+        global ckey;
+    
+        ckey = ckey + 1
+            
+        query = "INSERT INTO CATEGORIES VALUES('%s', '%s', %d)" % (name, feature, ckey)
+        cursor.execute(query)
+        
+        connection.commit() 
+        return redirect(url_for('category_page',  ckey=ckey))
+    
+    
+@app.route('/category/<int:ckey>/edit', methods=['GET', 'POST'])
+def category_edit_page(ckey):
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        
+    query = "SELECT * FROM CATEGORIES WHERE CKEY =ckey" 
+    cursor.execute(query)
+    
+    
+    if request.method == 'GET':
+        form = {'name', 'feature'}
+        connection.commit() 
+        return render_template('category_edit.html', form = form)
+    else:
+        name = request.form['name']
+        age = request.form['feature']
+
+        query = "UPDATE WRITERS SET name= '%s', feature='%s' WHERE KEY='%d'" % (name, feature, key)
+        cursor.execute(query)
+        
+        connection.commit() 
+        return redirect(url_for('category_page', ckey=ckey))
 
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')
@@ -380,6 +494,6 @@ if __name__ == '__main__':
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
         app.config['dsn'] = """user='vagrant' password='vagrant'
-                               host='localhost' port=1234 dbname='itucsdb'"""
+                               host='localhost' port=5432 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)
