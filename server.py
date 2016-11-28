@@ -15,7 +15,6 @@ from profilePageManager import *
 
 app = Flask(__name__)
 
-global i
 global userID
 userID = 0
 global key
@@ -111,8 +110,6 @@ def initialize_database():
         query = """INSERT INTO BOOK VALUES (3,'Tehlikeli Oyunlar','1234-5678-912',1)"""
         cursor.execute(query)
 
-        global i 
-        i = 0
         #creating the massages table
         query = """DROP TABLE IF EXISTS MESSAGES"""
         cursor.execute(query)
@@ -120,7 +117,7 @@ def initialize_database():
         query = """CREATE TABLE MESSAGES (
             USER_NAME VARCHAR(20),
             TEXT VARCHAR(120),
-            ID INTEGER PRIMARY KEY
+            ID SERIAL PRIMARY KEY
         )"""
         cursor.execute(query)
 
@@ -229,40 +226,30 @@ def message_edit(id):
 
 @app.route('/messages', methods=['GET', 'POST'])
 def message_board():
-    if request.method == 'GET':
-        with dbapi2.connect(app.config['dsn']) as connection:
-            cursor = connection.cursor()
+    with dbapi2.connect(app.config['dsn']) as connection:
+        with connection.cursor() as cursor:
+            if request.method == 'GET':
 
-            query = "SELECT * FROM MESSAGES ORDER BY ID"
-            cursor.execute(query)
+                query = "SELECT * FROM MESSAGES ORDER BY ID"
+                cursor.execute(query)
 
-            connection.commit()
-        return render_template('messages.html', messages = cursor.fetchall())
-    else:
-        message = request.form['message']
-        with dbapi2.connect(app.config['dsn']) as connection:
-            cursor = connection.cursor()
+                return render_template('messages.html', messages = cursor.fetchall())
+            else:
 
-            global i
+                message = request.form['message']
+                query = "INSERT INTO MESSAGES VALUES('Admin', '%s')" % (message)
+                cursor.execute(query)
 
-            query = "INSERT INTO MESSAGES VALUES('Admin', '%s', %d)" % (message, i)
-            cursor.execute(query)
-            i = i + 1
-
-            connection.commit()
-        return redirect(url_for('message_board'))
+                return redirect(url_for('message_board'))
 
 @app.route('/message/delete<int:id>', methods=['GET', 'POST'])
 def message_delete(id):
     with dbapi2.connect(app.config['dsn']) as connection:
-        cursor = connection.cursor()
+        with connection.cursor() as cursor:
 
-        query = "DELETE FROM MESSAGES WHERE(ID = %d)" % id
-        cursor.execute(query)
-
-        print(id)
-
-        connection.commit()
+            query = "DELETE FROM MESSAGES WHERE(ID = %d)" % id
+            cursor.execute(query)
+            
     return redirect(url_for('message_board'))
 
 global j
