@@ -1,0 +1,160 @@
+{% extends "layout.html" %}
+{% block title %}Admin Settings{% endblock %}
+{% block content %}
+<br>
+<br>
+<br>
+
+	{% for type in types %}
+			 <div class="panel-group">
+			    <div class="panel panel-primary">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+					        <a data-toggle="collapse" href="#{{type[0]}}">{{type[1]}}</a>
+					     </h4>
+					</div>
+					<div id={{type[0]}} class="panel-collapse collapse">
+						<div class="panel-body">Read Permision {{type[2]}}</div>
+						<div class="panel-body">Write Permision {{type[3]}}</div>
+					</div>
+					</div>
+				</div>
+			</div>
+	{% endfor %}
+
+
+
+<h1>Admin Settings</h1>
+	<form role="form" action="" method="post" name="admin" class="form-horizontal">
+		<fieldset>
+		<h2>Admin</h2>
+		<!-- Multiple Radios (inline) -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="radios">Read Permision</label>
+		  <div class="col-md-4">
+		    <label class="radio-inline" for="radios-0">
+		      <input name="read0" id="read0" value="FALSE" checked="checked" type="radio">
+		      0
+		    </label>
+		    <label class="radio-inline" for="radios-1">
+		      <input name="read0" id="read1" value="TRUE" type="radio">
+		      1
+		    </label>
+		  </div>
+		</div>
+
+		<!-- Multiple Radios (inline) -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="radios">Write Permision</label>
+		  <div class="col-md-4">
+		    <label class="radio-inline" for="radios-1">
+		      <input name="write0" id="write0" value="FALSE" checked="checked" type="radio">
+		      0
+		    </label>
+		    <label class="radio-inline" for="radios-1">
+		      <input name="write0" id="write1" value="TRUE" type="radio">
+		      1
+		    </label>
+		  </div>
+		</div>
+
+		<!-- Button (Double) -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="button1id"></label>
+		  <div class="col-md-8">
+		    <button id="admin" name="admin" class="btn btn-success">Send</button>
+		    <button id="button2id" name="admin_delete" class="btn btn-danger">Delete</button>
+		  </div>
+		</div>
+	</fieldset>
+	</form>
+
+	<form role="form" action="" method="post" name="member" class="form-horizontal">
+		<fieldset>
+		<h2>Member</h2>
+		<!-- Multiple Radios (inline) -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="radios">Read Permision</label>
+		  <div class="col-md-4">
+		    <label class="radio-inline" for="radios-0">
+		      <input name="read1" id="read0" value="FALSE" checked="checked" type="radio">
+		      0
+		    </label>
+		    <label class="radio-inline" for="radios-1">
+		      <input name="read1" id="read1" value="TRUE" type="radio">
+		      1
+		    </label>
+		  </div>
+		</div>
+
+		<!-- Multiple Radios (inline) -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="radios">Write Permision</label>
+		  <div class="col-md-4">
+		    <label class="radio-inline" for="radios-1">
+		      <input name="write1" id="write10" value="FALSE" checked="checked" type="radio">
+		      0
+		    </label>
+		    <label class="radio-inline" for="radios-1">
+		      <input name="write1" id="write11" value="TRUE" type="radio">
+		      1
+		    </label>
+		  </div>
+		</div>
+
+		<!-- Button (Double) -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="button1id"></label>
+		  <div class="col-md-8">
+		    <button id="member" name="member" class="btn btn-success">Send</button>
+		    <button id="button2id" name="member_delete" class="btn btn-danger">Delete</button>
+		  </div>
+		</div>
+		</fieldset>
+	</form>
+
+	<form role="form" action="" method="post" name="guest" class="form-horizontal">
+		<fieldset>
+		<h2>Guest</h2>
+		<!-- Multiple Radios (inline) -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="radios">Read Permision</label>
+		  <div class="col-md-4">
+		    <label class="radio-inline" for="radios-0">
+		      <input name="read2" id="read20" value="FALSE" checked="checked" type="radio">
+		      0
+		    </label>
+		    <label class="radio-inline" for="radios-1">
+		      <input name="read2" id="read21" value="TRUE" type="radio">
+		      1
+		    </label>
+		  </div>
+		</div>
+
+		<!-- Multiple Radios (inline) -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="radios">Write Permision</label>
+		  <div class="col-md-4">
+		    <label class="radio-inline" for="radios-1">
+		      <input name="write2" id="write20" value="FALSE" checked="checked" type="radio">
+		      0
+		    </label>
+		    <label class="radio-inline" for="radios-1">
+		      <input name="write2" id="write21" value="TRUE" type="radio">
+		      1
+		    </label>
+		  </div>
+		</div>
+
+		<!-- Button (Double) -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="button1id"></label>
+		  <div class="col-md-8">
+		    <button id="guest" name="guest" class="btn btn-success">Send</button>
+		    <button id="button2id" name="guest_delete" class="btn btn-danger">Delete</button>
+		  </div>
+		</div>
+		</fieldset>
+	</form>
+
+{% endblock %}

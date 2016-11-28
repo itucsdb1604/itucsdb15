@@ -10,33 +10,6 @@
 
 	<!-- Text input-->
 	<div class="form-group">
-	  <label class="col-md-4 control-label" for="name">Name:</label>
-	  <div class="col-md-4">
-	  <input id="name" name="name" placeholder="Name and Surname" class="form-control input-md" required="" type="text">
-
-	  </div>
-	</div>
-
-	<!-- Text input-->
-	<div class="form-group">
-	  <label class="col-md-4 control-label" for="location">Location</label>
-	  <div class="col-md-4">
-	  <input id="location" name="location" placeholder="location" class="form-control input-md" type="text">
-
-	  </div>
-	</div>
-
-	<!-- Text input-->
-	<div class="form-group">
-	  <label class="col-md-4 control-label" for="Birthday">Birthday</label>
-	  <div class="col-md-4">
-	  <input id="birthday" name="birthday" placeholder="birthday" class="form-control input-md" type="text">
-
-	  </div>
-	</div>
-
-	<!-- Text input-->
-	<div class="form-group">
 	  <label class="col-md-4 control-label" for="username">Username</label>
 	  <div class="col-md-4">
 	  <input id="username" name="username" placeholder="username" class="form-control input-md" required="" type="text">
@@ -50,6 +23,25 @@
 	  <div class="col-md-4">
 	    <input id="password" name="password" placeholder="password" class="form-control input-md" required="" type="password">
 
+	  </div>
+	</div>
+
+	<!-- Multiple Radios (inline) -->
+	<div class="form-group">
+	  <label class="col-md-4 control-label" for="radios">User Type</label>
+	  <div class="col-md-4">
+	    <label class="radio-inline" for="radios-0">
+	      <input name="type" id="type0" value="0" checked="checked" type="radio">
+	      Admin
+	    </label>
+	    <label class="radio-inline" for="radios-1">
+	      <input name="type" id="type1" value="1" type="radio">
+	      Member
+	    </label>
+	    <label class="radio-inline" for="radios-2">
+	      <input name="type" id="type2" value="2" type="radio">
+	      Guest
+	    </label>
 	  </div>
 	</div>
 
@@ -76,7 +68,7 @@
 					<div class="panel-body">{{user[1]}}</div>
 					<div class="panel-body">{{user[2]}}</div>
 					<div class="panel-body">{{user[3]}}</div>
-					<div class="panel-body">{{user[4]}}</div>
+					<div class="panel-body">{{user[6]}}</div>
 					<div class="panel-body">
 						<!-- Button (Double) -->
 						<div class="form-group">
@@ -94,7 +86,14 @@
 
 			</div>
 		</div>
+			{% if user[6] == 'Admin' %}
+				<div>
+					<p>Admin kaydi yapildi</p>
+				</div>
+				<a href="{{url_for('admin_setting')}}"><button id="button1id" name="button1id" class="btn btn-success">Admin Settings</button></a>
+			{% endif %}
 		{% endfor %}
+
 
    <footer>
      <div id="datetime">{{ current_time }}</div>

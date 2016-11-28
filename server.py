@@ -51,7 +51,7 @@ def initialize_database():
 
         query = """DROP TABLE IF EXISTS read_list"""
         cursor.execute(query)
-        
+
         query = """DROP TABLE IF EXISTS ANNOUNCEMENTS"""
         cursor.execute(query)
 
@@ -72,36 +72,52 @@ def initialize_database():
 
         query = """DROP TABLE IF EXISTS WRITERS"""
         cursor.execute(query)
-        
+
         query = """DROP TABLE IF EXISTS CATEGORIES"""
         cursor.execute(query)
-        
-        
+
+
         query = """CREATE TABLE CATEGORIES
                         (name VARCHAR(40),
                         feature VARCHAR(40),
                         ckey INTEGER PRIMARY KEY)"""
         cursor.execute(query)
-        
+
 
         query = """CREATE TABLE WRITERS
                         (name VARCHAR(40),
                         age VARCHAR(10),
                         key INTEGER PRIMARY KEY,
-                        categoryid INTEGER, 
+                        categoryid INTEGER,
                         FOREIGN KEY (categoryid) REFERENCES CATEGORIES (ckey))"""
         cursor.execute(query)
-        
 
-        query = """DROP TABLE IF EXISTS USERS"""
+
+        query = """DROP TABLE IF EXISTS USERSTYPES CASCADE"""
+        cursor.execute(query)
+        query = """CREATE TABLE USERSTYPES(
+                    id INTEGER PRIMARY KEY,
+                    type VARCHAR(20),
+                    readright boolean,
+                    writeright boolean )"""
+        cursor.execute(query)
+
+        query = """INSERT INTO USERSTYPES VALUES(0, 'Admin', TRUE, TRUE)"""
+        cursor.execute(query)
+        query = """INSERT INTO USERSTYPES VALUES(1, 'Member', TRUE, FALSE)"""
+        cursor.execute(query)
+        query = """INSERT INTO USERSTYPES VALUES(2, 'Guest', FALSE, FALSE)"""
+        cursor.execute(query)
+
+        query = """DROP TABLE IF EXISTS USERS CASCADE"""
         cursor.execute(query)
         query = """CREATE TABLE USERS(
                     ID INTEGER PRIMARY KEY,
-                    name VARCHAR(30),
-                    location VARCHAR(20),
-                    birthday VARCHAR(8),
                     username VARCHAR(20) NOT NULL,
-                    password VARCHAR(20) NOT NULL )"""
+                    password VARCHAR(20) NOT NULL,
+                    joindate VARCHAR(20),
+                    typeid INTEGER,
+                    FOREIGN KEY (typeid) REFERENCES USERSTYPES(id) ON DELETE RESTRICT )"""
         cursor.execute(query)
 
         #initialize the book table
@@ -129,7 +145,7 @@ def initialize_database():
         #creating the massages table
         query = """DROP TABLE IF EXISTS MESSAGES"""
         cursor.execute(query)
-        
+
         query = """CREATE TABLE MESSAGES (
             USER_NAME VARCHAR(20),
             TEXT VARCHAR(120),
@@ -169,22 +185,20 @@ def signup_page():
         with dbapi2.connect(app.config['dsn']) as connection:
             cursor = connection.cursor()
 
-            query = "SELECT * FROM USERS ORDER BY ID"
+            query = "SELECT * FROM USERS JOIN USERSTYPES ON (USERS.TYPEID = USERSTYPES.ID)"
             cursor.execute(query)
 
             connection.commit()
         return render_template('signup.html', users = cursor.fetchall())
     else:
         if 'signup' in request.form:
-            name = request.form['name']
-            location = request.form['location']
-            birthday = request.form['birthday']
             username = request.form['username']
             password = request.form['password']
+            type = int(request.form['type'])
             with dbapi2.connect(app.config['dsn']) as connection:
                 cursor = connection.cursor()
                 global userID
-                query = "INSERT INTO USERS VALUES('%d', '%s', '%s', '%s', '%s', '%s')" % (userID, name, location, birthday, username, password)
+                query = "INSERT INTO USERS VALUES('%d', '%s', '%s', '28.11.2016', '%d')" % (userID, username, password, type)
                 cursor.execute(query)
                 userID = userID + 1
                 connection.commit()
@@ -206,9 +220,6 @@ def user_edit(userID):
     if request.method == 'GET':
         return render_template('user_edit.html')
     else:
-        name = request.form['name']
-        location = request.form['location']
-        birthday = request.form['birthday']
         username = request.form['username']
         password = request.form['password']
         with dbapi2.connect(app.config['dsn']) as connection:
@@ -216,11 +227,81 @@ def user_edit(userID):
 
             query = """
             UPDATE USERS
-                SET name = '%s', location = '%s', birthday = '%s', username = '%s', password = '%s' WHERE (ID = %d)
-            """ % (name, location, birthday, username, password, userID)
+                SET username = '%s', password = '%s' WHERE (ID = %d)
+            """ % (username, password, userID)
             cursor.execute(query)
             connection.commit()
         return redirect(url_for('signup_page'))
+
+@app.route('/adminsettings', methods=['GET', 'POST'])
+def admin_setting():
+    if request.method == 'GET':
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+
+            query = "SELECT * FROM USERSTYPES ORDER BY ID"
+            cursor.execute(query)
+
+            connection.commit()
+        return render_template('adminsettings.html', types = cursor.fetchall())
+    else:
+        if 'admin' in request.form:
+            read = request.form['read0']
+            write = request.form['write0']
+            with dbapi2.connect(app.config['dsn']) as connection:
+                cursor = connection.cursor()
+                query = """
+                UPDATE USERSTYPES
+                    SET readright = '%s', writeright = '%s' WHERE (ID = 0)
+                """ % (read, write)
+                cursor.execute(query)
+                connection.commit()
+            return redirect(url_for('signup_page'))
+        elif 'admin_delete' in request.form:
+            with dbapi2.connect(app.config['dsn']) as connection:
+                cursor = connection.cursor()
+                query = "DELETE FROM USERSTYPES WHERE(ID = 0)"
+                cursor.execute(query)
+                connection.commit()
+            return redirect(url_for('signup_page'))
+        elif 'member' in request.form:
+            read = request.form['read1']
+            write = request.form['write1']
+            with dbapi2.connect(app.config['dsn']) as connection:
+                cursor = connection.cursor()
+                query = """
+                UPDATE USERSTYPES
+                    SET readright = '%s', writeright = '%s' WHERE (ID = 1)
+                """ % (read, write)
+                cursor.execute(query)
+                connection.commit()
+            return redirect(url_for('signup_page'))
+        elif 'member_delete' in request.form:
+            with dbapi2.connect(app.config['dsn']) as connection:
+                cursor = connection.cursor()
+                query = "DELETE FROM USERSTYPES WHERE(ID = 1)"
+                cursor.execute(query)
+                connection.commit()
+            return redirect(url_for('signup_page'))
+        elif 'guest' in request.form:
+            read = request.form['read2']
+            write = request.form['write2']
+            with dbapi2.connect(app.config['dsn']) as connection:
+                cursor = connection.cursor()
+                query = """
+                UPDATE USERSTYPES
+                    SET readright = '%s', writeright = '%s' WHERE (ID = 2)
+                """ % (read, write)
+                cursor.execute(query)
+                connection.commit()
+            return redirect(url_for('signup_page'))
+        elif 'guest_delete' in request.form:
+            with dbapi2.connect(app.config['dsn']) as connection:
+                cursor = connection.cursor()
+                query = "DELETE FROM USERSTYPES WHERE(ID = 2)"
+                cursor.execute(query)
+                connection.commit()
+            return redirect(url_for('signup_page'))
 
 @app.route('/messages/edit<int:id>', methods=['GET', 'POST'])
 def message_edit(id):
@@ -265,7 +346,7 @@ def message_delete(id):
 
             query = "DELETE FROM MESSAGES WHERE(ID = %d)" % id
             cursor.execute(query)
-            
+
     return redirect(url_for('message_board'))
 
 global j
@@ -304,22 +385,22 @@ def writers_page():
     if request.method == 'GET':
         with dbapi2.connect(app.config['dsn']) as connection:
             cursor = connection.cursor()
-    
+
             query = "SELECT * FROM WRITERS ORDER BY KEY"
             cursor.execute(query)
-            
+
             connection.commit()
         return render_template('writers.html', writers = cursor.fetchall())
     else:
         with dbapi2.connect(app.config['dsn']) as connection:
             cursor = connection.cursor()
-            
+
             deletes = request.form.getlist('writers_to_delete')
             for delete in deletes:
-    
+
                 query = "DELETE FROM WRITERS WHERE KEY='%s'" %delete
                 cursor.execute(query)
-            
+
             connection.commit()
         return redirect(url_for('writers_page'), writers = cursor.fetchall())
 
@@ -327,69 +408,69 @@ def writers_page():
 def writer_page(key):
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
-         
+
     query = "SELECT * FROM WRITERS WHERE KEY ='%d'" %key
     cursor.execute(query)
-    
+
     writers = cursor.fetchall()
     for writer in writers:
         if writer[2] == key:
                 return render_template('writer.html', writer = writer)
-    
+
 @app.route('/writers/add', methods=['GET', 'POST'])
 def writer_add_page():
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
-        
+
         query = "SELECT * FROM CATEGORIES ORDER BY CKEY"
-        cursor.execute(query) 
-        categories = cursor.fetchall()   
-        
+        cursor.execute(query)
+        categories = cursor.fetchall()
+
     if request.method == 'GET':
         form = {'name', 'age','categoryid'}
-        connection.commit() 
+        connection.commit()
         return render_template('writer_edit.html',categories = categories,form=form)
     else:
         name = request.form['name']
         age = request.form['age']
         categoryid = int(request.form['categoryid'])
         global key;
-        
+
         key = key + 1
-      
+
         query = "INSERT INTO WRITERS VALUES('%s', '%s', '%d', %d)" % (name, age, categoryid, key)
         cursor.execute(query)
-        
-        connection.commit() 
+
+        connection.commit()
         return redirect(url_for('writer_page',  key=key))
-    
-    
+
+
 @app.route('/writer/<int:key>/edit', methods=['GET', 'POST'])
 def writer_edit_page(key):
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
-        
+
     query = "SELECT * FROM CATEGORIES ORDER BY CKEY"
-    cursor.execute(query) 
-    categories = cursor.fetchall()   
-        
-    query = "SELECT * FROM WRITERS WHERE KEY =key" 
     cursor.execute(query)
-    
-    
+    categories = cursor.fetchall()
+
+    query = "SELECT * FROM WRITERS WHERE KEY =key"
+    cursor.execute(query)
+
+
     if request.method == 'GET':
         form = {'name', 'age', 'categoryid'}
-        connection.commit() 
+        connection.commit()
         return render_template('writer_edit.html',categories = categories, form = form)
     else:
         name = request.form['name']
         age = request.form['age']
         categoryid = int(request.form['categoryid'])
-        
+
         query = "UPDATE WRITERS SET name= '%s', age='%s',categoryid ='%d' WHERE KEY='%d'" % (name, age, categoryid, key)
         cursor.execute(query)
-        
-        connection.commit() 
+
+        connection.commit()
         return redirect(url_for('writer_page', key=key))
 
 @app.route('/categories', methods=['GET', 'POST'])
@@ -397,22 +478,22 @@ def categories_page():
     if request.method == 'GET':
         with dbapi2.connect(app.config['dsn']) as connection:
             cursor = connection.cursor()
-    
+
             query = "SELECT * FROM CATEGORIES ORDER BY CKEY"
             cursor.execute(query)
-            
+
             connection.commit()
         return render_template('categories.html', categories = cursor.fetchall())
     else:
         with dbapi2.connect(app.config['dsn']) as connection:
             cursor = connection.cursor()
-            
+
             deletes = request.form.getlist('categories_to_delete')
             for delete in deletes:
-    
+
                 query = "DELETE FROM CATEGORIES WHERE CKEY='%s'" %delete
                 cursor.execute(query)
-            
+
             connection.commit()
         return render_template('categories.html', categories = cursor.fetchall())
 
@@ -420,56 +501,56 @@ def categories_page():
 def category_page(ckey):
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
-        
-        
+
+
     query = "SELECT * FROM WRITERS ORDER BY KEY"
-    cursor.execute(query)   
+    cursor.execute(query)
     writers = cursor.fetchall()
-         
+
     query = "SELECT * FROM CATEGORIES WHERE CKEY ='%d'" %ckey
     cursor.execute(query)
-    
+
     categories = cursor.fetchall()
     for category in categories:
         if category[2] == ckey:
                 return render_template('category.html', writers = writers, category = category)
-    
+
 @app.route('/categories/add', methods=['GET', 'POST'])
 def category_add_page():
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
-        
+
     if request.method == 'GET':
         form = {'name', 'feature'}
-        connection.commit() 
+        connection.commit()
         return render_template('category_edit.html',form=form)
     else:
         name = request.form['name']
         feature = request.form['feature']
-        
+
         global ckey;
-    
+
         ckey = ckey + 1
-            
+
         query = "INSERT INTO CATEGORIES VALUES('%s', '%s', %d)" % (name, feature, ckey)
         cursor.execute(query)
-        
-        connection.commit() 
+
+        connection.commit()
         return redirect(url_for('category_page',  ckey=ckey))
-    
-    
+
+
 @app.route('/category/<int:ckey>/edit', methods=['GET', 'POST'])
 def category_edit_page(ckey):
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
-        
-    query = "SELECT * FROM CATEGORIES WHERE CKEY =ckey" 
+
+    query = "SELECT * FROM CATEGORIES WHERE CKEY =ckey"
     cursor.execute(query)
-    
-    
+
+
     if request.method == 'GET':
         form = {'name', 'feature'}
-        connection.commit() 
+        connection.commit()
         return render_template('category_edit.html', form = form)
     else:
         name = request.form['name']
@@ -477,8 +558,8 @@ def category_edit_page(ckey):
 
         query = "UPDATE WRITERS SET name= '%s', feature='%s' WHERE KEY='%d'" % (name, feature, key)
         cursor.execute(query)
-        
-        connection.commit() 
+
+        connection.commit()
         return redirect(url_for('category_page', ckey=ckey))
 
 if __name__ == '__main__':
