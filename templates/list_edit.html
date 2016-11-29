@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}List Edit{% endblock %}
+{% block content %}
+
+<br>
+<br>
+<div class="container">
+	<div class="well">
+		<form role="form" action="" method="post" name="list_add" class="form-horizontal">
+			<fieldset>
+				<!-- Form Name -->
+				<legend>Update the name of the Message List</legend>
+				<!-- Textarea -->
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-8">
+						<label>new name of the message list</label>
+					</div>
+					<div class="col-md-offset-4 col-md-4">
+						<textarea name="name" class="form-control" style="resize: vertical"></textarea>
+					</div>
+				</div>
+
+				<!-- Button -->
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">
+						<button type="submit" name="save" class="btn btn-success">Update</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+
+<br>
+<br>
+<div class="container">
+	<div class="well">
+		<form role="form" action="" method="post" name="list_add" class="form-horizontal">
+			<fieldset>
+				<!-- Form Name -->
+				<legend>Create New Message List for {{userName}}</legend>
+				<!-- Textarea -->
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-8">
+						<label>Name of the new message list</label>
+					</div>
+					<div class="col-md-offset-4 col-md-4">
+						<textarea name="list_name" class="form-control" style="resize: vertical"></textarea>
+					</div>
+				</div>
+
+				<!-- Button -->
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">
+						<button type="submit" name="save" class="btn btn-success">Add</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+
+{% endblock %}

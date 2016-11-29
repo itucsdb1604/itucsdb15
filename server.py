@@ -142,17 +142,29 @@ def initialize_database():
         query = """INSERT INTO BOOK VALUES (3,'Tehlikeli Oyunlar','1234-5678-912',1)"""
         cursor.execute(query)
 
-        #creating the massages table
-        query = """DROP TABLE IF EXISTS MESSAGES"""
+        #creating the massages table - Mustafa Furkan Suve
+         
+        query = """DROP TABLE IF EXISTS MESSAGE_LISTS CASCADE"""
         cursor.execute(query)
-
-        query = """CREATE TABLE MESSAGES (
-            USER_NAME VARCHAR(20),
-            TEXT VARCHAR(120),
-            ID SERIAL PRIMARY KEY
+        
+        query = """CREATE TABLE MESSAGE_LISTS (
+            USER_ID INT,
+            NAME VARCHAR(20),
+            ID SERIAL PRIMARY KEY,
+            FOREIGN KEY (USER_ID) REFERENCES USERS (ID) ON DELETE CASCADE
         )"""
         cursor.execute(query)
-
+        
+        query = """DROP TABLE IF EXISTS MESSAGES"""
+        cursor.execute(query)
+        
+        query = """CREATE TABLE MESSAGES (
+            LIST_ID INT,
+            TEXT VARCHAR(120),
+            ID SERIAL PRIMARY KEY,
+            FOREIGN KEY (LIST_ID) REFERENCES MESSAGE_LISTS (ID) ON DELETE CASCADE
+        )"""
+        cursor.execute(query)
         connection.commit()
     return redirect(url_for('home_page'))
 
@@ -179,6 +191,50 @@ def help_page():
 def login_page():
     return render_template('login.html')
 
+@app.route('/delete_list/<listID>')
+def list_delete(listID):
+    with dbapi2.connect(app.config['dsn']) as connection:
+        with connection.cursor() as cursor:
+            
+            query = "DELETE FROM MESSAGE_LISTS WHERE(ID = %s)" % listID
+            cursor.execute(query)
+            
+    return redirect(url_for('signup_page'))
+
+@app.route('/update_list/<listID>', methods=['GET', 'POST'])
+def list_update(listID):
+    if request.method == 'GET':
+        return render_template('list_edit.html')
+    else:
+        with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+
+            query = """
+            UPDATE MESSAGE_LISTS
+                SET NAME = '%s'
+                WHERE (ID = %s)
+            """ % (request.form['name'], listID)
+            cursor.execute(query)
+
+            connection.commit()
+        return redirect(url_for('signup_page'))
+
+@app.route('/add_list/<userID>/<userName>', methods=['GET', 'POST'])
+def list_add(userID, userName):
+    if request.method == 'GET':
+        return render_template('add_list.html', userID=userID, userName=userName)
+    
+    else:
+        with dbapi2.connect(app.config['dsn']) as connection:
+            with connection.cursor() as cursor:
+                
+                query = """
+                INSERT INTO MESSAGE_LISTS VALUES(%s, '%s')
+                """ % (userID ,request.form['list_name'])
+                cursor.execute(query)
+                
+        return redirect(url_for('signup_page')) 
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup_page():
     if request.method == 'GET':
@@ -188,8 +244,15 @@ def signup_page():
             query = "SELECT * FROM USERS JOIN USERSTYPES ON (USERS.TYPEID = USERSTYPES.ID)"
             cursor.execute(query)
 
+            u = cursor.fetchall()
+            
+            query = "SELECT * FROM MESSAGE_LISTS ORDER BY ID"
+            cursor.execute(query)
+            
+            l = cursor.fetchall()
+
             connection.commit()
-        return render_template('signup.html', users = cursor.fetchall())
+        return render_template('signup.html', users = u, lists = l)
     else:
         if 'signup' in request.form:
             username = request.form['username']
@@ -303,8 +366,8 @@ def admin_setting():
                 connection.commit()
             return redirect(url_for('signup_page'))
 
-@app.route('/messages/edit<int:id>', methods=['GET', 'POST'])
-def message_edit(id):
+@app.route('/messages/edit<int:id>/<listID>', methods=['GET', 'POST'])
+def message_edit(id, listID):
     if request.method == 'GET':
         return render_template('message_edit.html')
     else:
@@ -319,35 +382,52 @@ def message_edit(id):
             cursor.execute(query)
 
             connection.commit()
-        return redirect(url_for('message_board'))
+        return redirect(url_for('message_board', listID=listID))
 
-@app.route('/messages', methods=['GET', 'POST'])
-def message_board():
+@app.route('/messages/<listID>', methods=['GET', 'POST'])
+def message_board(listID):
     with dbapi2.connect(app.config['dsn']) as connection:
         with connection.cursor() as cursor:
             if request.method == 'GET':
 
-                query = "SELECT * FROM MESSAGES ORDER BY ID"
+                query = """SELECT * FROM MESSAGES 
+                            WHERE (LIST_ID = %s)
+                ORDER BY ID""" % listID
                 cursor.execute(query)
 
-                return render_template('messages.html', messages = cursor.fetchall())
+                messages = cursor.fetchall()
+
+                query="""SELECT USERNAME FROM USERS
+                            WHERE (ID = (SELECT USER_ID FROM MESSAGE_LISTS
+                                            WHERE (ID = %s)))""" % listID
+                cursor.execute(query)
+                
+                userName = cursor.fetchall()
+
+                query="""SELECT NAME FROM MESSAGE_LISTS
+                            WHERE (ID = %s)""" % listID
+                cursor.execute(query)
+                
+                listName = cursor.fetchall()
+
+                return render_template('messages.html', messages = messages, userName=userName, listName=listName, listID=listID)
             else:
 
                 message = request.form['message']
-                query = "INSERT INTO MESSAGES VALUES('Admin', '%s')" % (message)
+                query = """INSERT INTO MESSAGES VALUES(%s, '%s')""" % (listID, message)
                 cursor.execute(query)
 
-                return redirect(url_for('message_board'))
+                return redirect(url_for('message_board', listID=listID))
 
-@app.route('/message/delete<int:id>', methods=['GET', 'POST'])
-def message_delete(id):
+@app.route('/message/delete<int:id>/<listID>', methods=['GET', 'POST'])
+def message_delete(id, listID):
     with dbapi2.connect(app.config['dsn']) as connection:
         with connection.cursor() as cursor:
 
             query = "DELETE FROM MESSAGES WHERE(ID = %d)" % id
             cursor.execute(query)
-
-    return redirect(url_for('message_board'))
+            
+    return redirect(url_for('message_board', listID=listID))
 
 global j
 j=4
@@ -575,6 +655,6 @@ if __name__ == '__main__':
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
         app.config['dsn'] = """user='vagrant' password='vagrant'
-                               host='localhost' port=5432 dbname='itucsdb'"""
+                               host='localhost' port=1234 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)

@@ -8,7 +8,7 @@
 		<form role="form" action="" method="post" name="message_add" class="form-horizontal">
 			<fieldset>
 				<!-- Form Name -->
-				<legend>Message Board</legend>
+				<legend>{{userName[0][0]}} - {{listName[0][0]}}</legend>
 				<!-- Textarea -->
 				<div class="form-group">
 					<div class="col-md-offset-4 col-md-8">
@@ -31,7 +31,7 @@
 			{% for message in messages %}
 			<li>
 				<div class="panel panel-default">
-					<div class="panel-heading"><strong>{{message[0]}}</strong></div>
+					<div class="panel-heading"><strong>{{userName[0][0]}}</strong></div>
 					<div class="panel-body">
 						<div class="col-md-10">
 							<p>
@@ -39,7 +39,7 @@
 							</p>
 						</div>
 						<div class="col-md-1">
-							<a href="{{url_for('message_edit', id=message[2])}}"><button class="btn btn-info">Update</button></a>
+							<a href="{{url_for('message_edit', id=message[2], listID=listID)}}"><button class="btn btn-info">Update</button></a>
 						</div>
 						<div class="col-md-1">
 							<button class="btn btn-danger" data-toggle="modal" data-target="#myModal{{message[2]}}">Delete</button>
@@ -51,7 +51,7 @@
 											<h4 class="modal-title">Are you sure?</h4>
 										</div>
 										<div class="modal-body">
-											<a href="{{url_for('message_delete', id=message[2])}}">
+											<a href="{{url_for('message_delete', id=message[2], listID=listID)}}">
 												<button class="btn btn-danger btn-lg center-block">Yes</button>
 											</a>
 										</div>
