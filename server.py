@@ -120,8 +120,25 @@ def initialize_database():
                     FOREIGN KEY (typeid) REFERENCES USERSTYPES(id) ON DELETE RESTRICT )"""
         cursor.execute(query)
 
-        #initialize the book table
+        #initialize the PUBLISHER table -Ufuk SAHAR-
+        query = """DROP TABLE IF EXISTS PUBLISHER CASCADE"""
+        cursor.execute(query)
+        #initialize the BOOK table
         query = """DROP TABLE IF EXISTS BOOK"""
+        cursor.execute(query)
+        #Creating the PUBLISHER table
+        query = """CREATE TABLE IF NOT EXISTS PUBLISHER
+            (
+                id int PRIMARY KEY,
+                name varchar(40)
+            )
+        """
+        cursor.execute(query)
+        query = """INSERT INTO PUBLISHER VALUES (1,'ABC')"""
+        cursor.execute(query)
+        query = """INSERT INTO PUBLISHER VALUES (2,'XYZ')"""
+        cursor.execute(query)
+        query = """INSERT INTO PUBLISHER VALUES (3,'PQR')"""
         cursor.execute(query)
 
         #Creating the book table
@@ -130,23 +147,25 @@ def initialize_database():
                 id int,
                 title varchar(60),
                 isbn varchar(20),
-                edition int
+                edition int,
+                publisher_id int,
+                FOREIGN KEY (publisher_id) REFERENCES PUBLISHER(id)
             )
         """
         cursor.execute(query)
 
-        query = """INSERT INTO BOOK VALUES (1,'Tutunamayanlar','1234-5678-910',1)"""
+        query = """INSERT INTO BOOK VALUES (1,'Tutunamayanlar','1234-5678-910',1,3)"""
         cursor.execute(query)
-        query = """INSERT INTO BOOK VALUES (2,'Korkuyu Beklerken','1234-5678-911',1)"""
+        query = """INSERT INTO BOOK VALUES (2,'Korkuyu Beklerken','1234-5678-911',1,1)"""
         cursor.execute(query)
-        query = """INSERT INTO BOOK VALUES (3,'Tehlikeli Oyunlar','1234-5678-912',1)"""
+        query = """INSERT INTO BOOK VALUES (3,'Tehlikeli Oyunlar','1234-5678-912',1,2)"""
         cursor.execute(query)
 
         #creating the massages table - Mustafa Furkan Suve
-         
+
         query = """DROP TABLE IF EXISTS MESSAGE_LISTS CASCADE"""
         cursor.execute(query)
-        
+
         query = """CREATE TABLE MESSAGE_LISTS (
             USER_ID INT,
             NAME VARCHAR(20),
@@ -154,10 +173,10 @@ def initialize_database():
             FOREIGN KEY (USER_ID) REFERENCES USERS (ID) ON DELETE CASCADE
         )"""
         cursor.execute(query)
-        
+
         query = """DROP TABLE IF EXISTS MESSAGES"""
         cursor.execute(query)
-        
+
         query = """CREATE TABLE MESSAGES (
             LIST_ID INT,
             TEXT VARCHAR(120),
@@ -195,10 +214,10 @@ def login_page():
 def list_delete(listID):
     with dbapi2.connect(app.config['dsn']) as connection:
         with connection.cursor() as cursor:
-            
+
             query = "DELETE FROM MESSAGE_LISTS WHERE(ID = %s)" % listID
             cursor.execute(query)
-            
+
     return redirect(url_for('signup_page'))
 
 @app.route('/update_list/<listID>', methods=['GET', 'POST'])
@@ -223,17 +242,17 @@ def list_update(listID):
 def list_add(userID, userName):
     if request.method == 'GET':
         return render_template('add_list.html', userID=userID, userName=userName)
-    
+
     else:
         with dbapi2.connect(app.config['dsn']) as connection:
             with connection.cursor() as cursor:
-                
+
                 query = """
                 INSERT INTO MESSAGE_LISTS VALUES(%s, '%s')
                 """ % (userID ,request.form['list_name'])
                 cursor.execute(query)
-                
-        return redirect(url_for('signup_page')) 
+
+        return redirect(url_for('signup_page'))
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup_page():
@@ -245,10 +264,10 @@ def signup_page():
             cursor.execute(query)
 
             u = cursor.fetchall()
-            
+
             query = "SELECT * FROM MESSAGE_LISTS ORDER BY ID"
             cursor.execute(query)
-            
+
             l = cursor.fetchall()
 
             connection.commit()
@@ -390,7 +409,7 @@ def message_board(listID):
         with connection.cursor() as cursor:
             if request.method == 'GET':
 
-                query = """SELECT * FROM MESSAGES 
+                query = """SELECT * FROM MESSAGES
                             WHERE (LIST_ID = %s)
                 ORDER BY ID""" % listID
                 cursor.execute(query)
@@ -401,13 +420,13 @@ def message_board(listID):
                             WHERE (ID = (SELECT USER_ID FROM MESSAGE_LISTS
                                             WHERE (ID = %s)))""" % listID
                 cursor.execute(query)
-                
+
                 userName = cursor.fetchall()
 
                 query="""SELECT NAME FROM MESSAGE_LISTS
                             WHERE (ID = %s)""" % listID
                 cursor.execute(query)
-                
+
                 listName = cursor.fetchall()
 
                 return render_template('messages.html', messages = messages, userName=userName, listName=listName, listID=listID)
@@ -426,18 +445,19 @@ def message_delete(id, listID):
 
             query = "DELETE FROM MESSAGES WHERE(ID = %d)" % id
             cursor.execute(query)
-            
+
     return redirect(url_for('message_board', listID=listID))
 
-global j
-j=4
+global bookID
+bookID=4
+global publisherID
 
 @app.route('/library', methods=['GET', 'POST'])
 def library_page():
     if request.method == 'GET':
         with dbapi2.connect(app.config['dsn']) as connection:
             cursor = connection.cursor()
-            query = "SELECT * FROM BOOK ORDER BY ID"
+            query = "SELECT * FROM BOOK JOIN PUBLISHER ON BOOK.PUBLISHER_ID=PUBLISHER.ID ORDER BY BOOK.ID  "
             cursor.execute(query)
 
             connection.commit()
@@ -446,18 +466,38 @@ def library_page():
 
     else:
         title = request.form['title']
+        publishername = request.form['publishername']
         isbn = request.form['isbn']
         edition = request.form['edition']
         with dbapi2.connect(app.config['dsn']) as connection:
             cursor = connection.cursor()
 
-            global j
-            query = "INSERT INTO BOOK VALUES(%d, '%s', '%s','%s')" % (j,title,isbn,edition)
+            publisherID=1
+            query = "SELECT name FROM PUBLISHER"
+            cursor.execute(query)
+            publishers_name = cursor.fetchall()
+            print(publishers_name[0])
+
+            for name in publishers_name:
+                if name[0] == publishername:
+                    break
+                publisherID=publisherID+1
+
+
+            print(publisherID)
+            global bookID
+            if name[0] != publishername:
+                query = "INSERT INTO PUBLISHER VALUES(%d, '%s')" % (publisherID,publishername)
+                cursor.execute(query)
+            query = "INSERT INTO BOOK VALUES(%d, '%s', '%s','%s',%d)" % (bookID,title,isbn,edition,publisherID)
             cursor.execute(query)
 
-            j=j+1;
+
+            bookID=bookID+1;
+
             connection.commit()
         return redirect(url_for('library_page'))
+
 
 
 @app.route('/writers', methods=['GET', 'POST'])
@@ -654,7 +694,7 @@ if __name__ == '__main__':
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
-        app.config['dsn'] = """user='vagrant' password='vagrant'
-                               host='localhost' port=1234 dbname='itucsdb'"""
+        app.config['dsn'] = """user='postgres' password='1234'
+                               host='localhost' port=5432 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)
