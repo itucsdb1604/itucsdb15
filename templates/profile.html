@@ -1,77 +1,171 @@
-{% extends "layout.html" %}
-{% block title %}Profile{% endblock %}
-{% block content %}
-	
-	<!-- Displaying Read List Section -->
-	<div class="page-header">
-		<h1>Read Books List</h1>
+{% extends "layout.html" %} {% block title %}Profile{% endblock %} {%
+block content %}
+<hr class="">
+<div class="container target">
+	<div class="row">
+		<div class="col-sm-10">
+			<h1 class="" style="color: #FFFFFF;">BookWormX</h1>
+			<button type="button" class="btn btn-success">Follow</button>
+			<button type="button" class="btn btn-info">Send a Message</button>
+			<br>
+		</div>
+		<div class="col-sm-2">
+			<img title="profile image" class="img-circle img-responsive"
+				src="https://cdn0.iconfinder.com/data/icons/PRACTIKA/256/user.png">
+		</div>
 	</div>
-	
-	<form role="form" action="" method="post" name="books" class="form-horizontal">
-		<ul class="list-unstyled">
-			{% for book in books %}
-			<li>
-				<input type="checkbox" name="booksToDelete" value="{{ book.id }}">
-				<a href="{{ url_for('profile_page')}}"> {{ book.bookName }}, {{ book.authorName }}, ({{ book.publishYear}}), Read Date: {{book.readYear}} </a>
-			</li>
-			{% endfor %}
-		</ul>
-		
-		
-		{% if books %}
+
+	<br>
+	<div class="row">
+		<div class="col-sm-3">
+
+			<!--Left Column-->
+			<ul class="list-group">
+				<li class="list-group-item text-muted" contenteditable="false">Profile</li>
+				<li class="list-group-item text-right"><span class="pull-left"><strong
+						class="">Joined</strong></span> 6.12.2015</li>
+				<li class="list-group-item text-right"><span class="pull-left"><strong
+						class="">Last seen</strong></span> 3 days ago</li>
+				<li class="list-group-item text-right"><span class="pull-left"><strong
+						class="">Name</strong></span> John Doe</li>
+				<li class="list-group-item text-right"><span class="pull-left"><strong
+				class="">Age</strong></span> 22</li>
+				<li class="list-group-item text-right"><span class="pull-left"><strong
+						class="">Author/Reader </strong></span> Reader</li>
+			</ul>
+
+			<ul class="list-group">
+				<li class="list-group-item text-muted">Activity <i
+					class="fa fa-dashboard fa-1x"></i>
+
+				</li>
+				<li class="list-group-item text-right"><span class="pull-left"><strong
+						class="">Read Books</strong></span>{{ size }}</li>
+				<li class="list-group-item text-right"><span class="pull-left"><strong
+						class="">Likes</strong></span> 6</li>
+				<li class="list-group-item text-right"><span class="pull-left"><strong
+						class="">Followers</strong></span> 78</li>
+			</ul>
+		</div>
+
+		<!--/col-3-->
+		<div class="col-sm-9" contenteditable="false" style="">
+			<div class="panel panel-default">
+				<div class="panel-heading">BookWormX's Bio</div>
+				<div class="panel-body">Lorem ipsum dolor sit amet,
+					consectetur adipiscing elit. Maecenas eget neque dictum, suscipit
+					leo eget, lobortis tortor. Sed et enim metus. Etiam eu ullamcorper
+					ante, at pellentesque purus. Sed tempor efficitur justo vel
+					egestas. Nulla eu quam mattis, bibendum justo ac, facilisis justo.
+					Quisque et scelerisque elit, congue feugiat arcu. Nunc porttitor
+					urna et nisi ultrices, quis tempor mi lacinia. Praesent at turpis
+					luctus, pellentesque turpis quis, efficitur enim. Duis fringilla ex
+					pulvinar, aliquet sem sit amet, porttitor urna.</div>
+			</div>
+
+			<div class="panel panel-default target">
+				<div class="panel-heading" contenteditable="false">Books I
+					Have Read</div>
+				<div class="panel-body">
+
+					{% for book in readbooks %} {% if (readbooks.index(book) % 3 == 2 and
+					readbooks.index(book) != 0) %}
+					<div class="row">
+						{% endif %}
+						<div class="col-md-4">
+							<div class="thumbnail">
+								<img alt="300x200"
+									src="https://cdn.pastemagazine.com/www/system/images/photo_albums/hobbit-book-covers/large/photo_5653_0-7.jpg?1384968217">
+								<div class="caption">
+									<h4>{{book.bookName}}</h4>
+									<p>{{book.description}}</p>
+									<p>
+										<b>Publish Year:</b> {{book.publishYear}}
+									</p>
+									<p>
+										<b>Read Year:</b> {{book.readYear}}
+									</p>
+								</div>
+							</div>
+						</div>
+						{% if (readbooks.index(book) % 3 == 2 and readbooks.index(book) != 0) %}
+					</div>
+					{% endif %} {% endfor %}
+
+				</div>
+			</div>
+		</div>
+
+
+
+
+
+
+
+
+
+
+		<!-- Displaying Read List Section -->
+		<div class="row">
+			<h1>Read Books List</h1>
+		</div>
+
+		<form role="form" action="" method="post" name="books"
+			class="form-horizontal">
+			<ul class="list-unstyled">
+				{% for book in readbooks %}
+				<li><input type="checkbox" name="booksToDelete"
+					value="{{ book.id }}"> <a
+					href="{{ url_for('profile_page')}}"> {{ book.bookName }}, {{
+						book.authorName }}, ({{ book.publishYear}}), Read Date:
+						{{book.readYear}} </a></li> {% endfor %}
+			</ul>
+
+
+			{% if readbooks %}
 			<button type="submit" name="delete" class="btn btn-primary">Delete</button>
-		{% endif %}
-	
-	</form>
-	
-	<!-- Add new Book Section -->
-	<form class="form-horizontal" method="post">
-		<fieldset>
-		
-		<!-- Form Name -->
-		<legend>Add New Book To Read List</legend>
-		
-		<!-- Text input-->
-		<div class="form-group">
-		  <label class="col-md-4 control-label" for="bookName">Book Name:</label>  
-		  <div class="col-md-4">
-		  	<input id="bookName" name="bookName" type="text" placeholder="Hobbit" class="form-control input-md">
-		  </div>
-		</div>
-		
-		<!-- Text input-->
-		<div class="form-group">
-		  <label class="col-md-4 control-label" for="authorName">Author:</label>  
-		  <div class="col-md-4">
-		  	<input id="authorName" name="authorName" type="text" placeholder="J.R.R Tolkien" class="form-control input-md">
-		  </div>
-		</div>
-		
-		<!-- Text input-->
-		<div class="form-group">
-		  <label class="col-md-4 control-label" for="publishYear">Publish Year:</label>  
-		  <div class="col-md-4">
-		  	<input id="publishYear" name="publishYear" type="text" placeholder="2007" class="form-control input-md">
-		  </div>
-		</div>
-		
-		<!-- Text input-->
-		<div class="form-group">
-		  <label class="col-md-4 control-label" for="readYear">Read Year:</label>  
-		  <div class="col-md-4">
-		  	<input id="readYear" name="readYear" type="text" placeholder="2009" class="form-control input-md">
-		  </div>
-		</div>
-		
-		<!-- Button -->
-		<div class="form-group">
-		  <label class="col-md-4 control-label" for="submit"></label>
-		  <div class="col-md-4">
-		    <button type="submit" name="saveButton" class="btn btn-primary">Save</button>
-		  </div>
-		</div>
-		
-		</fieldset>
-	</form>
-	
+			{% endif %}
+
+		</form>
+
+		<!-- Add new Book Section -->
+		<form class="form-horizontal" method="post">
+			<fieldset>
+
+				<!-- Form Name -->
+				<legend>Add New Book To Read List</legend>
+
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="sel1">Select Book From The List:</label>
+				  <div class="col-md-4">
+					  <select class="form-control" name="bookName" id="selection">
+					  {% for book in booklist %}
+					    <option>{{book.bookName}}</option>
+					  {% endfor %}
+					  </select>
+				  </div>	  
+				</div>
+
+				<!-- Text input-->
+				<div class="form-group">
+					<label class="col-md-4 control-label" for="readYear">Read
+						Year:</label>
+					<div class="col-md-4">
+						<input id="readYear" name="readYear" type="text"
+							placeholder="2009" class="form-control input-md">
+					</div>
+				</div>
+
+				<!-- Button -->
+				<div class="form-group">
+					<label class="col-md-4 control-label" for="submit"></label>
+					<div class="col-md-4">
+						<button type="submit" name="saveButton" class="btn btn-primary">Add</button>
+					</div>
+				</div>
+
+			</fieldset>
+		</form>
+	</div>
+</div>
 {% endblock %}

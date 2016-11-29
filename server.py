@@ -149,7 +149,8 @@ def initialize_database():
                 isbn varchar(20),
                 edition int,
                 publisher_id int,
-                FOREIGN KEY (publisher_id) REFERENCES PUBLISHER(id)
+                FOREIGN KEY (publisher_id) REFERENCES PUBLISHER(id),
+                PRIMARY KEY (id)
             )
         """
         cursor.execute(query)
@@ -190,8 +191,8 @@ def initialize_database():
 @app.route('/profile', methods=['GET', 'POST'])
 def profile_page():
     bookList = handleReadList(request)
-    print(len(bookList))
-    return render_template('profile.html', books = bookList)
+    readBooks = getBooksFromReadList()
+    return render_template('profile.html', readbooks = readBooks, booklist = bookList, size = len(readBooks))
 
 @app.route('/timeline')
 def timeline_page():

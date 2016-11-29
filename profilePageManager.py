@@ -12,7 +12,9 @@ from flask import redirect
 from flask import Blueprint
 from flask.helpers import url_for
 from ReadBook import *
+from Book import *
 from _sqlite3 import Row
+from builtins import str
 
 globalBookID = 0
 
@@ -33,17 +35,26 @@ def handleReadList(request):
                 cursor.execute(query)
                 connection.commit()
         else:
-            id = newIDFromReadList()
             bookName = request.form['bookName']
-            authorName = request.form['authorName']
-            publishYear = request.form['publishYear']    
             readYear = request.form['readYear']
+            
             with dbapi2.connect(app.config['dsn']) as connection:
                 cursor = connection.cursor()
                 query = """
-                        INSERT INTO read_list(id, book_name, author_name, publish_year, read_year)
-                        VALUES("""+ str(id) + ",'" + bookName  + "','" + authorName + "'," + publishYear + ',' + readYear + """);
+                        SELECT id FROM book
+                            WHERE(title = '""" + bookName + """');
                     """
+                cursor.execute(query)
+                connection.commit()
+                for row in cursor.fetchall():
+                    id = row[0]
+                    
+                print(readYear)
+                newID = newIDFromReadList()
+                query = """
+                        INSERT INTO read_list(id, read_year, book_id)
+                        VALUES("""+ str(newID) + "," + str(readYear) + "," + str(id) + """);"""
+                     
                 cursor.execute(query)
                 connection.commit()
     
@@ -55,19 +66,37 @@ def handleReadList(request):
             for id in booksToDelete:
                 deleteBookFromReadList(id)
 
-    return getBooksFromReadList()
+    return getBooksFromLibrary()
+
+def getBooksFromLibrary():
+    with dbapi2.connect(app.config['dsn']) as connection:
+            books = list()
+            cursor = connection.cursor()
+            query = """
+                    SELECT * FROM book;
+                """
+            cursor.execute(query)
+            for row in cursor.fetchall():
+                id, bookName, isbn, edition, publisher = row
+                books.insert(len(books), Book(id,bookName, isbn, edition))
+            
+            return books 
+
 
 def getBooksFromReadList():
     with dbapi2.connect(app.config['dsn']) as connection:
             books = list()
             cursor = connection.cursor()
             query = """
-                    SELECT * FROM read_list;
+                    SELECT title, read_year
+                        FROM book, read_list
+                            WHERE(book.id = read_list.book_id)
+        
                 """
             cursor.execute(query)
             for row in cursor.fetchall():
-                id, bookName, authorName, publishYear, readYear = row
-                books.insert(len(books), ReadBook(id, bookName, authorName, publishYear, readYear))
+                title, readYear = row
+                books.insert(len(books), ReadBook(1, title, "authorName", 2000 , readYear))
             
             return books 
 
@@ -78,10 +107,9 @@ def create_readList():
         query = """
                     CREATE TABLE IF NOT EXISTS read_list(
                         id int,
-                        book_name varchar,
-                        author_name varchar,
-                        publish_year int,
-                        read_year int
+                        read_year NUMERIC(4),
+                        book_id int,
+                        PRIMARY KEY (id)
                         );
                 """
         cursor.execute(query)
