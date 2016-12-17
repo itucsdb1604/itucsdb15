@@ -12,7 +12,7 @@ from flask.helpers import url_for
 from flask.globals import request
 from profilePageManager import *
 from MustafaHandler import *
-
+from initMustafa import *
 
 app = Flask(__name__)
 
@@ -53,24 +53,6 @@ def initialize_database():
         query = """DROP TABLE IF EXISTS read_list"""
         cursor.execute(query)
 
-        query = """DROP TABLE IF EXISTS ANNOUNCEMENTS"""
-        cursor.execute(query)
-
-        query = """CREATE TABLE ANNOUNCEMENTS (ID INTEGER, CONTENT VARCHAR(200))"""
-        cursor.execute(query)
-
-        query = """INSERT INTO ANNOUNCEMENTS VALUES (1, 'This is the first Announcement')"""
-        cursor.execute(query)
-
-        query = """INSERT INTO ANNOUNCEMENTS VALUES (2, 'This is the second Announcement')"""
-        cursor.execute(query)
-
-        query = """INSERT INTO ANNOUNCEMENTS VALUES (3, 'This is the third Announcement')"""
-        cursor.execute(query)
-
-        query = """INSERT INTO ANNOUNCEMENTS VALUES (4, 'This is the fourth Announcement')"""
-        cursor.execute(query)
-
         query = """DROP TABLE IF EXISTS WRITERS"""
         cursor.execute(query)
 
@@ -83,7 +65,6 @@ def initialize_database():
                         feature VARCHAR(40),
                         ckey INTEGER PRIMARY KEY)"""
         cursor.execute(query)
-
 
         query = """CREATE TABLE WRITERS
                         (name VARCHAR(40),
@@ -162,31 +143,11 @@ def initialize_database():
         cursor.execute(query)
         query = """INSERT INTO BOOK VALUES (3,'Tehlikeli Oyunlar','1234-5678-912',1,2)"""
         cursor.execute(query)
+        connection.commit()
 
         #creating the massages table - Mustafa Furkan Suve
+        initMustafaTables()
 
-        query = """DROP TABLE IF EXISTS MESSAGE_LISTS CASCADE"""
-        cursor.execute(query)
-
-        query = """CREATE TABLE MESSAGE_LISTS (
-            USER_ID INT,
-            NAME VARCHAR(20),
-            ID SERIAL PRIMARY KEY,
-            FOREIGN KEY (USER_ID) REFERENCES USERS (ID) ON DELETE CASCADE
-        )"""
-        cursor.execute(query)
-
-        query = """DROP TABLE IF EXISTS MESSAGES"""
-        cursor.execute(query)
-
-        query = """CREATE TABLE MESSAGES (
-            LIST_ID INT,
-            TEXT VARCHAR(120),
-            ID SERIAL PRIMARY KEY,
-            FOREIGN KEY (LIST_ID) REFERENCES MESSAGE_LISTS (ID) ON DELETE CASCADE
-        )"""
-        cursor.execute(query)
-        connection.commit()
     return redirect(url_for('home_page'))
 
 @app.route('/profile', methods=['GET', 'POST'])
