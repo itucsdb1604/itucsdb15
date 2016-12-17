@@ -114,3 +114,56 @@ def listDeleteHandler(listID):
             cursor.execute(query)
 
     return redirect(url_for('signup_page'))
+
+def followHandler(userID, userName):
+    with dbapi2.connect(app.config['dsn']) as connection:
+        with connection.cursor() as cursor:
+            if request.method == 'GET':
+                
+                query="""SELECT ID, USERNAME FROM USERS"""
+                cursor.execute(query)
+                
+                userList=cursor.fetchall()
+                
+                query="""SELECT FOLLOWED_ID FROM FOLLOW 
+                            WHERE(FOLLOWER_ID = %s)
+                      """ % userID
+                cursor.execute(query)
+                
+                followed=cursor.fetchall()
+                
+                for i, f in enumerate(followed):
+                    followed[i] = f[0]
+                    
+                followed.append(userID)
+                
+                return render_template('follow.html', userName=userName, userID=userID, userList=userList, followed=followed)
+            else:
+                ids = request.form.getlist('user_ids')
+                for id in ids:
+                    query="""
+                        INSERT INTO FOLLOW VALUES(%d, %s)
+                    """ % (userID, id)
+                    cursor.execute(query)
+                return redirect(url_for('users_to_follow', userID=userID, userName=userName))
+            
+def unfollowHandler(follower_id, followed_id):
+    with dbapi2.connect(app.config['dsn']) as connection:
+        with connection.cursor() as cursor:
+            
+            query = """DELETE FROM FOLLOW 
+                        WHERE(FOLLOWER_ID = %s AND FOLLOWED_ID = %s)
+                    """ % (follower_id, followed_id)
+            cursor.execute(query)
+            
+            query="""SELECT USERNAME FROM USERS
+                        WHERE(ID = %s)
+                    """ % follower_id
+            cursor.execute(query)
+            
+            userName = cursor.fetchone()
+            
+        return redirect(url_for('users_to_follow', userID=follower_id, userName=userName[0]))
+            
+            
+            

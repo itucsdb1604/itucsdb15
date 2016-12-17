@@ -165,6 +165,14 @@ def timeline_page():
     connection.commit()
     return render_template('timeline.html')
 
+@app.route('/follow/<int:userID>/<userName>', methods=['GET', 'POST'])
+def users_to_follow(userID, userName):
+    return followHandler(userID, userName)
+
+@app.route('/unfollow/<follower_id>/<followed_id>')
+def unfollow(follower_id, followed_id):
+    return unfollowHandler(follower_id, followed_id)
+
 @app.route('/help')
 def help_page():
     return render_template('help.html')

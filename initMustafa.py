@@ -57,4 +57,16 @@ def initMustafaTables():
                 FOREIGN KEY (LIST_ID) REFERENCES MESSAGE_LISTS (ID) ON DELETE CASCADE
             )"""
             cursor.execute(query)
+            
+            query = """DROP TABLE IF EXISTS FOLLOW"""
+            cursor.execute(query)
+    
+            query = """CREATE TABLE FOLLOW (
+                FOLLOWER_ID INT,
+                FOLLOWED_ID INT,
+                PRIMARY KEY (FOLLOWER_ID, FOLLOWED_ID),
+                FOREIGN KEY (FOLLOWER_ID) REFERENCES USERS (ID) ON DELETE CASCADE,
+                FOREIGN KEY (FOLLOWED_ID) REFERENCES USERS (ID) ON DELETE CASCADE
+            )"""
+            cursor.execute(query)
         connection.commit()

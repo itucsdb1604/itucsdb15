@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+
+<br>
+<br>
+<div class="container">
+	<div class="well">
+		<div class="page-header">
+			<h1>{{userName}} - Users</h1>
+		</div>
+		
+		{% if userList %}
+			<form role="form" action="" method="post" name="users" class="form-horizontal">
+				<ul class="list-unstyled">
+				{% for user in userList %}
+					<div class="row">
+						<li>
+							<div class="col-xs-1">
+								{% if user[0] not in followed %}
+								<input type="checkbox" name="user_ids" value="{{ user[0] }}" />
+								{% else %}
+								{% if user[1] != userName %} <a href="{{url_for('unfollow', follower_id=userID, followed_id=user[0])}}"> Unfollow </a> {% endif %}
+								{% endif %}
+							</div>
+							<div class="col-xs-11"> {{ user[1] }} </div>
+						</li>
+					</div>
+				{% endfor %}
+				</ul>
+		
+		        <button type="submit" name="delete" class="btn btn-primary">Follow</button>
+			</form>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

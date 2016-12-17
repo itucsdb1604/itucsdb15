@@ -73,6 +73,8 @@
 						<!-- Button (Double) -->
 						<div class="col-sm-4">
 							<a href="{{url_for('list_add', userID=user[0], userName=user[1])}}"><div class="bg-info">Add New Message List</div></a>
+							<br/>
+							<a href="{{url_for('users_to_follow', userID=user[0], userName=user[1])}}"><div class="bg-danger">Following Issues</div></a>
 						</div>
 						<div class="col-sm-4">
 							<ol class="list-unstyled">
