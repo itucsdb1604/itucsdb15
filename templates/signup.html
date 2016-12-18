@@ -63,7 +63,7 @@
 					<div class="row">
 						<div class="col-sm-10">
 							<h4 class="panel-title" style="transform: translateY(50%);">
-						        <a data-toggle="collapse" href="#{{user[4]}}">{{user[4]}}</a>
+						        <a data-toggle="collapse" href="#{{user[4]}}">{{user[0]}}</a>
 						    </h4>
 						</div>
 						<div class="col-sm-2">
@@ -116,9 +116,9 @@
 					<div class="panel-body">
 						<!-- Button (Double) -->
 						<div class="col-sm-4">
-							<a href="{{url_for('list_add', userID=user[4], userName=user[1])}}"><div class="bg-info">Add New Message List</div></a>
+							<a href="{{url_for('list_add', userID=user[4], userName=user[0])}}"><div class="bg-info">Add New Message List</div></a>
 							<br/>
-							<a href="{{url_for('users_to_follow', userID=user[4], userName=user[1])}}"><div class="bg-danger">Follow - Unfollow</div></a>
+							<a href="{{url_for('users_to_follow', userID=user[4], userName=user[0])}}"><div class="bg-danger">Follow - Unfollow</div></a>
 						</div>
 						<div class="col-sm-4">
 							<ol class="list-unstyled">

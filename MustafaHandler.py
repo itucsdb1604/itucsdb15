@@ -284,7 +284,7 @@ def listDeleteHandler(listID):
                 
             for followerid in followers:
                 query = """
-                INSERT INTO NOTIFICATION VALUES(%s, '%s has deleted the %s list.')
+                INSERT INTO NOTIFICATION VALUES(%s, '%s has deleted the ''%s'' list.')
                 """ % (followerid[0] ,userName, listName)
                 cursor.execute(query)
             

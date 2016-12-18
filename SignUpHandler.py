@@ -40,9 +40,18 @@ def userList():
         cursor.execute(query)
 
         l = cursor.fetchall()
+        
+        query = "SELECT * FROM NOTIFICATION"
+        cursor.execute(query)
+        n = cursor.fetchall()
+ 
+        query = """SELECT USER_ID, COUNT(USER_ID) FROM NOTIFICATION
+                     GROUP BY USER_ID
+                """
+        cursor.execute(query)
 
         connection.commit()
-    return render_template('signup.html', users = u, lists = l)
+    return render_template('signup.html', users = u, lists = l, notifications = n, notification_count = cursor.fetchall())
 
 def signUp():
     username = request.form['username']
@@ -50,7 +59,7 @@ def signUp():
     type = int(request.form['type'])
     with dbapi2.connect(app.config['dsn']) as connection:
         cursor = connection.cursor()
-        query = "INSERT INTO USERS VALUES('%s', '%s', '28.11.2016', '%d')" % (username, password, type)
+        query = "INSERT INTO USERS VALUES('%s', '%s', '28.11.2016', %d)" % (username, password, type)
         cursor.execute(query)
         connection.commit()
     return redirect(url_for('signup_page'))
