@@ -598,12 +598,9 @@ def seller_page(s_isbn):
     query = "SELECT * FROM SELLER ORDER BY S_ISBN"
     cursor.execute(query)
     sellers = cursor.fetchall()
-    query = "SELECT * FROM BOOK WHERE ISBN='%s' " %s_isbn
-    cursor.execute(query)
-    book = cursor.fetchall()
     for seller in sellers:
         if seller[0] == s_isbn:
-                return render_template('seller.html', seller = seller,book=book[0])
+                return render_template('seller.html', seller = seller)
 
 
 @app.route('/sellers/add', methods=['GET', 'POST'])
@@ -692,7 +689,7 @@ def writer_page(key):
     cursor.execute(query)
 
     awards = cursor.fetchall()
-    
+
     query = "SELECT * FROM WRITERS WHERE KEY ='%d'" %key
     cursor.execute(query)
 
@@ -987,7 +984,7 @@ if __name__ == '__main__':
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
-        app.config['dsn'] = """user='vagrant' password='vagrant'
+        app.config['dsn'] = """user='postgres' password='1234'
                                host='localhost' port=5432 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)
