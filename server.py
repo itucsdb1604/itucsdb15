@@ -692,14 +692,17 @@ def writer_page(key):
     cursor.execute(query)
 
     awards = cursor.fetchall()
-
+    
     query = "SELECT * FROM WRITERS WHERE KEY ='%d'" %key
     cursor.execute(query)
 
     writers = cursor.fetchall()
     for writer in writers:
         if writer[2] == key:
-            return render_template('writer.html', writer = writer, awards = awards)
+            query = "SELECT * FROM CATEGORIES WHERE CKEY ='%d'" %writer[3]
+            cursor.execute(query)
+            category = cursor.fetchall()
+            return render_template('writer.html', writer = writer, awards = awards, category=category[0])
 
 @app.route('/writers/add', methods=['GET', 'POST'])
 def writer_add_page():
@@ -984,7 +987,7 @@ if __name__ == '__main__':
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
-        app.config['dsn'] = """user='postgres' password='1234'
+        app.config['dsn'] = """user='vagrant' password='vagrant'
                                host='localhost' port=5432 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)
