@@ -243,7 +243,7 @@ def signup_page():
 
 @app.route('/user/edit<int:userID>', methods=['GET', 'POST'])
 def user_edit(userID):
-    return userEdit()
+    return userEdit(userID)
 
 @app.route('/adminsettings', methods=['GET', 'POST'])
 def admin_setting():
@@ -828,6 +828,6 @@ if __name__ == '__main__':
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
         app.config['dsn'] = """user='vagrant' password='vagrant'
-                               host='localhost' port=1234 dbname='itucsdb'"""
+                               host='localhost' port=5432 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)

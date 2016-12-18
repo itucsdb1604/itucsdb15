@@ -40,11 +40,11 @@ def userList():
         cursor.execute(query)
 
         l = cursor.fetchall()
-        
+
         query = "SELECT * FROM NOTIFICATION"
         cursor.execute(query)
         n = cursor.fetchall()
- 
+
         query = """SELECT USER_ID, COUNT(USER_ID) FROM NOTIFICATION
                      GROUP BY USER_ID
                 """
@@ -76,7 +76,7 @@ def deleteUser():
         connection.commit()
     return redirect(url_for('signup_page'))
 
-def userEdit():
+def userEdit(userID):
     if request.method == 'GET':
         return render_template('user_edit.html')
     else:
