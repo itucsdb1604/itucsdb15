@@ -11,6 +11,7 @@ from flask import render_template
 from flask.helpers import url_for
 from flask.globals import request
 from profilePageManager import *
+from libraryPageManager import *
 from MustafaHandler import *
 from initMustafa import *
 
@@ -403,29 +404,11 @@ global id
 id=0
 global publisherID
 publisherID=3
+
 @app.route('/library', methods=['GET', 'POST'])
 def library_page():
-    if request.method == 'GET':
-        with dbapi2.connect(app.config['dsn']) as connection:
-            cursor = connection.cursor()
-
-            query = "SELECT * FROM BOOK ORDER BY ID"
-            cursor.execute(query)
-
-            connection.commit()
-        return render_template('library.html', library = cursor.fetchall())
-    else:
-        with dbapi2.connect(app.config['dsn']) as connection:
-            cursor = connection.cursor()
-
-            deletes = request.form.getlist('library_to_delete')
-            for delete in deletes:
-                query = "DELETE FROM BOOK WHERE ID='%s'" %delete
-                cursor.execute(query)
-            query = "SELECT * FROM BOOK ORDER BY ID"
-            cursor.execute(query)
-            connection.commit()
-        return render_template('library.html', library = cursor.fetchall())
+    libraryBooks = handleBookList(request)
+    return render_template('library.html', books = libraryBooks, size = len(libraryBooks))
 
 @app.route('/book/<int:id>')
 def book_page(id):

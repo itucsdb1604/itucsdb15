@@ -18,6 +18,7 @@ from builtins import str
 
 globalBookID = 0
 
+
 site = Blueprint('site', __name__)
 app = current_app
 
@@ -25,7 +26,6 @@ def handleReadList(request):
     create_readList()
     
     if('saveButton' in request.form):
-        print('Save Clicked')
         if request.method == 'GET':
             with dbapi2.connect(app.config['dsn']) as connection:
                 cursor = connection.cursor()
@@ -41,15 +41,15 @@ def handleReadList(request):
             with dbapi2.connect(app.config['dsn']) as connection:
                 cursor = connection.cursor()
                 query = """
-                        SELECT id FROM book
+                        SELECT id FROM book_list
                             WHERE(title = '""" + bookName + """');
                     """
                 cursor.execute(query)
                 connection.commit()
+                id = 0
                 for row in cursor.fetchall():
                     id = row[0]
                     
-                print(readYear)
                 newID = newIDFromReadList()
                 query = """
                         INSERT INTO read_list(id, read_year, book_id)
@@ -61,44 +61,60 @@ def handleReadList(request):
     elif('delete' in request.form):
         with dbapi2.connect(app.config['dsn']) as connection:
             cursor = connection.cursor()
-            print('Delete Button Clicked')
             booksToDelete = request.form.getlist('booksToDelete')
             for id in booksToDelete:
                 deleteBookFromReadList(id)
+                print("ID:" + str(id))
 
     return getBooksFromLibrary()
 
 def getBooksFromLibrary():
     with dbapi2.connect(app.config['dsn']) as connection:
-            books = list()
-            cursor = connection.cursor()
-            query = """
-                    SELECT * FROM book;
-                """
-            cursor.execute(query)
-            for row in cursor.fetchall():
-                id, bookName, isbn, edition, publisher = row
-                books.insert(len(books), Book(id,bookName, isbn, edition))
+        books = list()
+        cursor = connection.cursor()
+        query = """
+                SELECT * FROM book_list;
+            """
+        cursor.execute(query)
+        for row in cursor.fetchall():
+            id, title, author, publishYear, description, publisher, isbn, edition = row
+            books.insert(len(books), Book(id, title, author, publishYear, description, publisher, isbn, edition))
             
-            return books 
+        for book in books:
+            if book.title == 'Hobbit':
+                book.photo_url = "https://cdn.pastemagazine.com/www/system/images/photo_albums/hobbit-book-covers/large/photo_5653_0-7.jpg?1384968217"
+            elif book.title == 'Tutunamayanlar':
+                book.photo_url = "http://yazarokur.com/rsm/kitap/_ko/tutunamayanlar.jpg"
+            elif book.title == "Korkuyu Beklerken":
+                book.photo_url = "http://www.iletisim.com.tr/images/UserFiles/images/Spot/120402153824.jpg"
+            elif book.title == 'Dijital Kale':
+                book.title = "https://upload.wikimedia.org/wikipedia/tr/thumb/6/61/Dijital_Kale.jpg/220px-Dijital_Kale.jpg"
+            elif book.title == 'Denemeler':
+                book.photo_url = "http://www.birazoku.com/wp-content/uploads/2013/01/denemeler-michel-de-montaigne.jpg"
+            
+        return books 
 
 
 def getBooksFromReadList():
     with dbapi2.connect(app.config['dsn']) as connection:
-            books = list()
+            readbooks = list()
             cursor = connection.cursor()
             query = """
-                    SELECT title, read_year
-                        FROM book, read_list
-                            WHERE(book.id = read_list.book_id)
+                    SELECT title, read_year, read_list.id
+                        FROM book_list, read_list
+                            WHERE(book_list.id = read_list.book_id)
         
                 """
             cursor.execute(query)
             for row in cursor.fetchall():
-                title, readYear = row
-                books.insert(len(books), ReadBook(1, title, "authorName", 2000 , readYear))
-            
-            return books 
+                title, readYear, id = row
+                newBook = ReadBook(id, title, "authorName", 2000 , readYear)
+                allBooks = getBooksFromLibrary()
+                for book in allBooks:
+                    if book.title == title:
+                        newBook.photo_url = book.photo_url
+                readbooks.insert(len(readbooks), newBook)
+            return readbooks 
 
 def create_readList():
     with dbapi2.connect(app.config['dsn']) as connection:

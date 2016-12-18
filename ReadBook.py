@@ -1,4 +1,5 @@
 class ReadBook:
+    photo_url = ""
     def __init__(self, id, bookName, authorName, publishYear, readYear = 2000, description = "Description"):
         self.id = id;
         self.bookName = bookName

@@ -75,7 +75,7 @@ block content %}
 						<div class="col-md-4">
 							<div class="thumbnail">
 								<img alt="300x200"
-									src="https://cdn.pastemagazine.com/www/system/images/photo_albums/hobbit-book-covers/large/photo_5653_0-7.jpg?1384968217">
+									src="{{ book.photo_url }}">
 								<div class="caption">
 									<h4>{{book.bookName}}</h4>
 									<p>{{book.description}}</p>
@@ -95,15 +95,6 @@ block content %}
 				</div>
 			</div>
 		</div>
-
-
-
-
-
-
-
-
-
 
 		<!-- Displaying Read List Section -->
 		<div class="row">
@@ -140,7 +131,7 @@ block content %}
 				  <div class="col-md-4">
 					  <select class="form-control" name="bookName" id="selection">
 					  {% for book in booklist %}
-					    <option>{{book.bookName}}</option>
+					    <option>{{book.title}}</option>
 					  {% endfor %}
 					  </select>
 				  </div>	  

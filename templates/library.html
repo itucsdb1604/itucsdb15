@@ -1,32 +1,136 @@
 {% extends "layout.html" %}
-{% block title %}Book List{% endblock %}
+{% block title %}Library{% endblock %}
 {% block content %}
-	<div class="page-header">
-	<h1>Library</h1>
-	</div>
+<br>
+<br>
+<form role="form" action="" method="post" name="add_book" class="form-horizontal"class="form-horizontal">
+    <fieldset>
 
-<form role="form" action="" method="post" name="library" class="form-horizontal">
-	<div class="row">
-	<div class="col-sm-1"></div>
-	<div class="col-sm-3">
-	<a href="{{ request.path }}/add" class="btn btn-primary">Add Book</a>
-	</div>
-	</div>
+        <!-- Form Name -->
+        <legend>Add Book</legend>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="textinput">Title:</label>
+            <div class="col-md-2">
+                <input id="textinput" name="title" type="text" placeholder=""
+                    class="form-control input-md">
+
+            </div>
+        </div>
+        
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="textinput">Author:</label>
+            <div class="col-md-2">
+                <input id="textinput" name="author" type="text" placeholder=""
+                    class="form-control input-md">
+
+            </div>
+        </div>
+        
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="textinput">Publish Year:</label>
+            <div class="col-md-2">
+                <input id="textinput" name="publishYear" type="text" placeholder=""
+                    class="form-control input-md">
+
+            </div>
+        </div>
+        
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="textinput">Brief Description:</label>
+            <div class="col-md-2">
+                <input id="textinput" name="description" type="text" placeholder=""
+                    class="form-control input-md">
+
+            </div>
+        </div>
+        
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="textinput">Publisher:</label>
+            <div class="col-md-2">
+                <input id="textinput" name="publisherName" type="text" placeholder=""
+                    class="form-control input-md">
+
+            </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="textinput">ISBN:</label>
+            <div class="col-md-2">
+                <input id="textinput" name="isbn" type="text" placeholder=""
+                    class="form-control input-md">
+
+            </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="textinput">Edition:</label>
+            <div class="col-md-2">
+                <input id="textinput" name="edition" type="text" placeholder=""
+                    class="form-control input-md">
+
+            </div>
+        </div>
+
+        <!-- Button -->
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-2">
+                <button type="submit" name="save" class="btn btn-success">Add Book</button>
+            </div>
+        </div>
 
 
-	<ul class="list-unstyled">
-	{% for book in library %}
-		<li>
-		<input type="checkbox" name="library_to_delete" value=" {{ book[0] }} " />
-		<a href="{{ url_for('book_page', id= book[0]  )}}">  {{ book[1] }} </a>
-		</li>
-	{% endfor %}
-
-	</ul>
-
-	{% if library %}
-		<button type="submit" name="delete" class="btn btn-primary">Delete</button>
-	{% endif %}
+    </fieldset>
 </form>
+<form role="form" action="" method="get" name="list_book" class="form-horizontal"class="form-horizontal">
+    <fieldset>
+
+        <!-- Form Name -->
+        <legend>All the Books In Library</legend>
+
+        <!--/col-3-->
+		<div class="col-sm-9" contenteditable="false" style="">
+			<div class="panel panel-default target">
+				<div class="panel-heading" contenteditable="false">Library</div>
+				<div class="panel-body">
+				
+					{% for book in books %} {% if books.index(book) % 4 == 0 %}
+					<div class="row">
+						{% endif %}
+						<div class="col-md-3">
+							<div class="thumbnail">
+								<img alt="300x200"
+									src="{{ book.photo_url }}">
+								<div class="caption">
+									<h4>{{book.title}}</h4>
+									<p>
+										<b>Author:</b> {{book.author}}
+									</p>
+									<p>{{book.description}}</p>
+									<p>
+										<b>Publish Year:</b> {{book.publishYear}}
+									</p>
+								</div>
+							</div>
+						</div>
+						{% if books.index(book) % 4 == 3 %}
+					</div>
+					{% endif %} {% endfor %}
+
+				</div>
+			</div>
+		</div>
+
+    </fieldset>
+</form>
+
+
 
 {% endblock %}
