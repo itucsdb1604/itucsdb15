@@ -17,7 +17,7 @@ app = current_app
 def initMustafaTables():
     with dbapi2.connect(app.config['dsn']) as connection:
         with connection.cursor() as cursor:
-                
+            # Announcements table
             query = """DROP TABLE IF EXISTS ANNOUNCEMENTS"""
             cursor.execute(query)
     
@@ -35,18 +35,18 @@ def initMustafaTables():
     
             query = """INSERT INTO ANNOUNCEMENTS VALUES (4, 'This is the fourth Announcement')"""
             cursor.execute(query)
-            
+            # MessageList table
             query = """DROP TABLE IF EXISTS MESSAGE_LISTS CASCADE"""
             cursor.execute(query)
     
             query = """CREATE TABLE MESSAGE_LISTS (
                 USER_ID INT,
-                NAME VARCHAR(20),
+                NAME VARCHAR(120),
                 ID SERIAL PRIMARY KEY,
                 FOREIGN KEY (USER_ID) REFERENCES USERS (ID) ON DELETE CASCADE
             )"""
             cursor.execute(query)
-    
+            # Message table
             query = """DROP TABLE IF EXISTS MESSAGES"""
             cursor.execute(query)
     
@@ -57,7 +57,7 @@ def initMustafaTables():
                 FOREIGN KEY (LIST_ID) REFERENCES MESSAGE_LISTS (ID) ON DELETE CASCADE
             )"""
             cursor.execute(query)
-            
+            # Follow table
             query = """DROP TABLE IF EXISTS FOLLOW"""
             cursor.execute(query)
     
@@ -67,6 +67,17 @@ def initMustafaTables():
                 PRIMARY KEY (FOLLOWER_ID, FOLLOWED_ID),
                 FOREIGN KEY (FOLLOWER_ID) REFERENCES USERS (ID) ON DELETE CASCADE,
                 FOREIGN KEY (FOLLOWED_ID) REFERENCES USERS (ID) ON DELETE CASCADE
+            )"""
+            cursor.execute(query)
+            # Notification table
+            query = """DROP TABLE IF EXISTS NOTIFICATION"""
+            cursor.execute(query)
+    
+            query = """CREATE TABLE NOTIFICATION (
+                USER_ID INT,
+                TEXT VARCHAR(120),
+                ID SERIAL PRIMARY KEY,
+                FOREIGN KEY (USER_ID) REFERENCES USERS (ID) ON DELETE CASCADE
             )"""
             cursor.execute(query)
         connection.commit()

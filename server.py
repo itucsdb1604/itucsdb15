@@ -220,6 +220,10 @@ def list_update(listID):
 def list_add(userID, userName):
     return listAddHandler(userID, userName)
     
+@app.route('/delete_notification/<id>')
+def notification_delete(id):
+    return notificationDeleteHandler(id)
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup_page():
     if request.method == 'GET':
@@ -236,8 +240,17 @@ def signup_page():
 
             l = cursor.fetchall()
 
+            query = "SELECT * FROM NOTIFICATION"
+            cursor.execute(query)
+            n = cursor.fetchall()
+
+            query = """SELECT USER_ID, COUNT(USER_ID) FROM NOTIFICATION
+                        GROUP BY USER_ID
+                    """
+            cursor.execute(query)
+
             connection.commit()
-        return render_template('signup.html', users = u, lists = l)
+        return render_template('signup.html', users = u, lists = l, notifications = n, notification_count = cursor.fetchall())
     else:
         if 'signup' in request.form:
             username = request.form['username']
@@ -750,6 +763,6 @@ if __name__ == '__main__':
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
         app.config['dsn'] = """user='vagrant' password='vagrant'
-                               host='localhost' port=5432 dbname='itucsdb'"""
+                               host='localhost' port=1234 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)

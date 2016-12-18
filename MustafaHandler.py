@@ -46,6 +46,37 @@ def messageBoardHandler(listID):
                 query = """INSERT INTO MESSAGES VALUES(%s, '%s')""" % (listID, message)
                 cursor.execute(query)
 
+                query="""SELECT USER_ID FROM MESSAGE_LISTS
+                            WHERE (ID = %s)""" % listID
+                cursor.execute(query)
+                userID = cursor.fetchone()
+                userID = userID[0]
+                
+                query="""SELECT USERNAME FROM USERS
+                            WHERE (ID = %s)""" % userID
+                cursor.execute(query)
+                userName = cursor.fetchone()
+                userName = userName[0]
+
+                query = """
+                SELECT FOLLOWER_ID FROM FOLLOW
+                    WHERE(FOLLOWED_ID = %s)
+                """ % userID
+                cursor.execute(query)
+                followers = cursor.fetchall()
+                
+                query="""SELECT NAME FROM MESSAGE_LISTS
+                            WHERE (ID = %s)""" % listID
+                cursor.execute(query)
+                listName = cursor.fetchone()
+                listName = listName[0]
+                
+                for followerid in followers:
+                    query = """
+                    INSERT INTO NOTIFICATION VALUES(%s, '%s has sent a new message to ''%s'' list')
+                    """ % (followerid[0] ,userName, listName)
+                    cursor.execute(query)
+
                 return redirect(url_for('message_board', listID=listID))
 
 def messageDeleteHandler(id, listID):
@@ -54,6 +85,37 @@ def messageDeleteHandler(id, listID):
 
             query = "DELETE FROM MESSAGES WHERE(ID = %d)" % id
             cursor.execute(query)
+            
+            query="""SELECT USER_ID FROM MESSAGE_LISTS
+                            WHERE (ID = %s)""" % listID
+            cursor.execute(query)
+            userID = cursor.fetchone()
+            userID = userID[0]
+            
+            query="""SELECT NAME FROM MESSAGE_LISTS
+                            WHERE (ID = %s)""" % listID
+            cursor.execute(query)
+            listName = cursor.fetchone()
+            listName = listName[0]
+            
+            query = """
+            SELECT FOLLOWER_ID FROM FOLLOW
+                WHERE(FOLLOWED_ID = %s)
+            """ % userID
+            cursor.execute(query)
+            followers = cursor.fetchall()
+                
+            query="""SELECT USERNAME FROM USERS
+                            WHERE (ID = %s)""" % userID
+            cursor.execute(query)
+            userName = cursor.fetchone()
+            userName = userName[0]
+                
+            for followerid in followers:
+                query = """
+                INSERT INTO NOTIFICATION VALUES(%s, '%s has deleted a message from %s list.')
+                """ % (followerid[0] ,userName, listName)
+                cursor.execute(query)
 
     return redirect(url_for('message_board', listID=listID))
 
@@ -71,6 +133,37 @@ def messageEditHandler(id, listID):
             """ % (request.form['message'], id)
             cursor.execute(query)
 
+            query="""SELECT USER_ID FROM MESSAGE_LISTS
+                            WHERE (ID = %s)""" % listID
+            cursor.execute(query)
+            userID = cursor.fetchone()
+            userID = userID[0]
+            
+            query="""SELECT NAME FROM MESSAGE_LISTS
+                            WHERE (ID = %s)""" % listID
+            cursor.execute(query)
+            listName = cursor.fetchone()
+            listName = listName[0]
+            
+            query = """
+            SELECT FOLLOWER_ID FROM FOLLOW
+                WHERE(FOLLOWED_ID = %s)
+            """ % userID
+            cursor.execute(query)
+            followers = cursor.fetchall()
+                
+            query="""SELECT USERNAME FROM USERS
+                            WHERE (ID = %s)""" % userID
+            cursor.execute(query)
+            userName = cursor.fetchone()
+            userName = userName[0]
+                
+            for followerid in followers:
+                query = """
+                INSERT INTO NOTIFICATION VALUES(%s, '%s has updated a message from %s list.')
+                """ % (followerid[0] ,userName, listName)
+                cursor.execute(query)
+                
             connection.commit()
         return redirect(url_for('message_board', listID=listID))
 
@@ -81,12 +174,45 @@ def listUpdateHandler(listID):
         with dbapi2.connect(app.config['dsn']) as connection:
             cursor = connection.cursor()
 
+            query="""SELECT NAME FROM MESSAGE_LISTS
+                            WHERE (ID = %s)""" % listID
+            cursor.execute(query)
+            listName = cursor.fetchone()
+            oldListName = listName[0]
+
+            listName = request.form['name']
+
             query = """
             UPDATE MESSAGE_LISTS
                 SET NAME = '%s'
                 WHERE (ID = %s)
             """ % (request.form['name'], listID)
             cursor.execute(query)
+
+            query="""SELECT USER_ID FROM MESSAGE_LISTS
+                            WHERE (ID = %s)""" % listID
+            cursor.execute(query)
+            userID = cursor.fetchone()
+            userID = userID[0]
+            
+            query = """
+            SELECT FOLLOWER_ID FROM FOLLOW
+                WHERE(FOLLOWED_ID = %s)
+            """ % userID
+            cursor.execute(query)
+            followers = cursor.fetchall()
+                
+            query="""SELECT USERNAME FROM USERS
+                            WHERE (ID = %s)""" % userID
+            cursor.execute(query)
+            userName = cursor.fetchone()
+            userName = userName[0]
+                
+            for followerid in followers:
+                query = """
+                INSERT INTO NOTIFICATION VALUES(%s, '%s has changed the name of %s list to %s')
+                """ % (followerid[0] ,userName, oldListName, listName)
+                cursor.execute(query)
 
             connection.commit()
         return redirect(url_for('signup_page'))
@@ -103,16 +229,65 @@ def listAddHandler(userID, userName):
                 INSERT INTO MESSAGE_LISTS VALUES(%s, '%s')
                 """ % (userID ,request.form['list_name'])
                 cursor.execute(query)
+                
+                query = "SELECT CURRVAL('MESSAGE_LISTS_ID_SEQ')"
+                cursor.execute(query)
+                listID = cursor.fetchone()
+                listID = listID[0]
+                
+                query = """
+                SELECT FOLLOWER_ID FROM FOLLOW
+                    WHERE(FOLLOWED_ID = %s)
+                """ % userID
+                cursor.execute(query)
+                followers = cursor.fetchall()
+                
+                for followerid in followers:
+                    query = """
+                    INSERT INTO NOTIFICATION VALUES(%s, '%s has created a new message list.')
+                    """ % (followerid[0] ,userName)
+                    cursor.execute(query)
 
-        return redirect(url_for('signup_page'))
+        return redirect(url_for('message_board', listID=listID))
     
 def listDeleteHandler(listID):
     with dbapi2.connect(app.config['dsn']) as connection:
         with connection.cursor() as cursor:
 
+            query="""SELECT NAME FROM MESSAGE_LISTS
+                        WHERE (ID = %s)""" % listID
+            cursor.execute(query)
+            listName = cursor.fetchone()
+            listName = listName[0]
+
+            query="""SELECT USER_ID FROM MESSAGE_LISTS
+                    WHERE (ID = %s)""" % listID
+            cursor.execute(query)
+            userID = cursor.fetchone()
+            userID = userID[0]
+            
             query = "DELETE FROM MESSAGE_LISTS WHERE(ID = %s)" % listID
             cursor.execute(query)
-
+            
+            query = """
+            SELECT FOLLOWER_ID FROM FOLLOW
+                WHERE(FOLLOWED_ID = %s)
+            """ % userID
+            cursor.execute(query)
+            followers = cursor.fetchall()
+                
+            query="""SELECT USERNAME FROM USERS
+                            WHERE (ID = %s)""" % userID
+            cursor.execute(query)
+            userName = cursor.fetchone()
+            userName = userName[0]
+                
+            for followerid in followers:
+                query = """
+                INSERT INTO NOTIFICATION VALUES(%s, '%s has deleted the %s list.')
+                """ % (followerid[0] ,userName, listName)
+                cursor.execute(query)
+            
     return redirect(url_for('signup_page'))
 
 def followHandler(userID, userName):
@@ -145,6 +320,12 @@ def followHandler(userID, userName):
                         INSERT INTO FOLLOW VALUES(%d, %s)
                     """ % (userID, id)
                     cursor.execute(query)
+                    
+                    query = """
+                    INSERT INTO NOTIFICATION VALUES(%s, '%s has followed you.')
+                    """ % (id ,userName)
+                    cursor.execute(query)
+                    
                 return redirect(url_for('users_to_follow', userID=userID, userName=userName))
             
 def unfollowHandler(follower_id, followed_id):
@@ -160,10 +341,24 @@ def unfollowHandler(follower_id, followed_id):
                         WHERE(ID = %s)
                     """ % follower_id
             cursor.execute(query)
-            
             userName = cursor.fetchone()
+            userName = userName[0]
             
-        return redirect(url_for('users_to_follow', userID=follower_id, userName=userName[0]))
+            query = """
+                    INSERT INTO NOTIFICATION VALUES(%s, '%s has unfollowed you.')
+                    """ % (followed_id ,userName)
+            cursor.execute(query)
             
-            
-            
+        return redirect(url_for('users_to_follow', userID=follower_id, userName=userName))
+
+def notificationDeleteHandler(id):
+    with dbapi2.connect(app.config['dsn']) as connection:
+        with connection.cursor() as cursor:
+
+            query = """DELETE FROM NOTIFICATION
+                            WHERE(ID = %s)
+                    """ % id
+            cursor.execute(query)
+    
+    return redirect(url_for('signup_page'))
+
