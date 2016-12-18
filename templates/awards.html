@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Award List{% endblock %}
+{% block content %}
+	<div class="page-header">
+	<h1>Awards</h1>
+	</div>
+
+<form role="form" action="" method="post" name="awards" class="form-horizontal">
+	<div class="row">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-3">
+	<a href="{{ request.path }}/add" class="btn btn-primary">Add Award</a>
+	</div>
+	</div>
+
+	
+	<ul class="list-unstyled">
+	{% for award in awards %}
+		<li>
+		<input type="checkbox" name="awards_to_delete" value=" {{ award[2] }} " />
+		<a href="{{ url_for('award_page', akey= award[2]  )}}"> {{ award[0] }} {{ award[1] }} </a>
+		</li>
+	{% endfor %}
+	
+	</ul>
+
+	{% if awards %}
+		<button type="submit" name="delete" class="btn btn-primary">Delete</button>
+	{% endif %}
+</form>	
+	
+{% endblock %}
