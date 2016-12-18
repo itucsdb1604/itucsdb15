@@ -194,7 +194,7 @@ def initialize_database():
         query = """INSERT INTO BOOK VALUES (3,'Tehlikeli Oyunlar','1234-5678-912',1,2)"""
         cursor.execute(query)
 
-
+        connection.commit()
         #creating the massages table - Mustafa Furkan Suve
         initMustafaTables()
 
