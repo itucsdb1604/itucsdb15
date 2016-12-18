@@ -14,6 +14,8 @@ from profilePageManager import *
 from libraryPageManager import *
 from MustafaHandler import *
 from initMustafa import *
+from SignUpHandler import *
+from AdminSettingHandler import *
 
 app = Flask(__name__)
 
@@ -122,7 +124,7 @@ def initialize_database():
         query = """DROP TABLE IF EXISTS USERS CASCADE"""
         cursor.execute(query)
         query = """CREATE TABLE USERS(
-                    ID INTEGER PRIMARY KEY,
+                    ID SERIAL PRIMARY KEY,
                     username VARCHAR(20) NOT NULL,
                     password VARCHAR(20) NOT NULL,
                     joindate VARCHAR(20),
@@ -207,15 +209,6 @@ def profile_page():
     readBooks = getBooksFromReadList()
     return render_template('profile.html', readbooks = readBooks, booklist = bookList, size = len(readBooks))
 
-@app.route('/timeline')
-def timeline_page():
-    with dbapi2.connect(app.config['dsn']) as connection:
-        cursor = connection.cursor()
-
-
-    connection.commit()
-    return render_template('timeline.html')
-
 @app.route('/follow/<int:userID>/<userName>', methods=['GET', 'POST'])
 def users_to_follow(userID, userName):
     return followHandler(userID, userName)
@@ -223,10 +216,6 @@ def users_to_follow(userID, userName):
 @app.route('/unfollow/<follower_id>/<followed_id>')
 def unfollow(follower_id, followed_id):
     return unfollowHandler(follower_id, followed_id)
-
-@app.route('/help')
-def help_page():
-    return render_template('help.html')
 
 @app.route('/login')
 def login_page():
@@ -250,143 +239,15 @@ def notification_delete(id):
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup_page():
-    if request.method == 'GET':
-        with dbapi2.connect(app.config['dsn']) as connection:
-            cursor = connection.cursor()
-
-            query = "SELECT * FROM USERS JOIN USERSTYPES ON (USERS.TYPEID = USERSTYPES.ID)"
-            cursor.execute(query)
-
-            u = cursor.fetchall()
-
-            query = "SELECT * FROM MESSAGE_LISTS ORDER BY ID"
-            cursor.execute(query)
-
-            l = cursor.fetchall()
-
-            query = "SELECT * FROM NOTIFICATION"
-            cursor.execute(query)
-            n = cursor.fetchall()
-
-            query = """SELECT USER_ID, COUNT(USER_ID) FROM NOTIFICATION
-                        GROUP BY USER_ID
-                    """
-            cursor.execute(query)
-
-            connection.commit()
-        return render_template('signup.html', users = u, lists = l, notifications = n, notification_count = cursor.fetchall())
-    else:
-        if 'signup' in request.form:
-            username = request.form['username']
-            password = request.form['password']
-            type = int(request.form['type'])
-            with dbapi2.connect(app.config['dsn']) as connection:
-                cursor = connection.cursor()
-                global userID
-                query = "INSERT INTO USERS VALUES('%d', '%s', '%s', '28.11.2016', '%d')" % (userID, username, password, type)
-                cursor.execute(query)
-                userID = userID + 1
-                connection.commit()
-            return redirect(url_for('signup_page'))
-        elif 'delete' in request.form:
-            with dbapi2.connect(app.config['dsn']) as connection:
-                cursor = connection.cursor()
-
-                print(request.form['delete'])
-
-                query = "DELETE FROM USERS WHERE(ID = %s)" % request.form['delete']
-                cursor.execute(query)
-
-                connection.commit()
-            return redirect(url_for('signup_page'))
+    return handleSignUp()
 
 @app.route('/user/edit<int:userID>', methods=['GET', 'POST'])
 def user_edit(userID):
-    if request.method == 'GET':
-        return render_template('user_edit.html')
-    else:
-        username = request.form['username']
-        password = request.form['password']
-        with dbapi2.connect(app.config['dsn']) as connection:
-            cursor = connection.cursor()
-
-            query = """
-            UPDATE USERS
-                SET username = '%s', password = '%s' WHERE (ID = %d)
-            """ % (username, password, userID)
-            cursor.execute(query)
-            connection.commit()
-        return redirect(url_for('signup_page'))
+    return userEdit()
 
 @app.route('/adminsettings', methods=['GET', 'POST'])
 def admin_setting():
-    if request.method == 'GET':
-        with dbapi2.connect(app.config['dsn']) as connection:
-            cursor = connection.cursor()
-
-            query = "SELECT * FROM USERSTYPES ORDER BY ID"
-            cursor.execute(query)
-
-            connection.commit()
-        return render_template('adminsettings.html', types = cursor.fetchall())
-    else:
-        if 'admin' in request.form:
-            read = request.form['read0']
-            write = request.form['write0']
-            with dbapi2.connect(app.config['dsn']) as connection:
-                cursor = connection.cursor()
-                query = """
-                UPDATE USERSTYPES
-                    SET readright = '%s', writeright = '%s' WHERE (ID = 0)
-                """ % (read, write)
-                cursor.execute(query)
-                connection.commit()
-            return redirect(url_for('signup_page'))
-        elif 'admin_delete' in request.form:
-            with dbapi2.connect(app.config['dsn']) as connection:
-                cursor = connection.cursor()
-                query = "DELETE FROM USERSTYPES WHERE(ID = 0)"
-                cursor.execute(query)
-                connection.commit()
-            return redirect(url_for('signup_page'))
-        elif 'member' in request.form:
-            read = request.form['read1']
-            write = request.form['write1']
-            with dbapi2.connect(app.config['dsn']) as connection:
-                cursor = connection.cursor()
-                query = """
-                UPDATE USERSTYPES
-                    SET readright = '%s', writeright = '%s' WHERE (ID = 1)
-                """ % (read, write)
-                cursor.execute(query)
-                connection.commit()
-            return redirect(url_for('signup_page'))
-        elif 'member_delete' in request.form:
-            with dbapi2.connect(app.config['dsn']) as connection:
-                cursor = connection.cursor()
-                query = "DELETE FROM USERSTYPES WHERE(ID = 1)"
-                cursor.execute(query)
-                connection.commit()
-            return redirect(url_for('signup_page'))
-        elif 'guest' in request.form:
-            read = request.form['read2']
-            write = request.form['write2']
-            with dbapi2.connect(app.config['dsn']) as connection:
-                cursor = connection.cursor()
-                query = """
-                UPDATE USERSTYPES
-                    SET readright = '%s', writeright = '%s' WHERE (ID = 2)
-                """ % (read, write)
-                cursor.execute(query)
-                connection.commit()
-            return redirect(url_for('signup_page'))
-        elif 'guest_delete' in request.form:
-            with dbapi2.connect(app.config['dsn']) as connection:
-                cursor = connection.cursor()
-                query = "DELETE FROM USERSTYPES WHERE(ID = 2)"
-                cursor.execute(query)
-                connection.commit()
-            return redirect(url_for('signup_page'))
+    return handleAdminSetting()
 
 @app.route('/messages/edit<int:id>/<listID>', methods=['GET', 'POST'])
 def message_edit(id, listID):
@@ -404,7 +265,6 @@ global id
 id=0
 global publisherID
 publisherID=3
-
 @app.route('/library', methods=['GET', 'POST'])
 def library_page():
     libraryBooks = handleBookList(request)
@@ -967,7 +827,7 @@ if __name__ == '__main__':
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
-        app.config['dsn'] = """user='postgres' password='1234'
+        app.config['dsn'] = """user='vagrant' password='vagrant'
                                host='localhost' port=5432 dbname='itucsdb'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)
