@@ -1,98 +1,32 @@
 {% extends "layout.html" %}
-{% block title %}Library{% endblock %}
+{% block title %}Book List{% endblock %}
 {% block content %}
-<br>
-<br>
-<form role="form" action="" method="post" name="add_book" class="form-horizontal"class="form-horizontal">
-    <fieldset>
+	<div class="page-header">
+	<h1>Library</h1>
+	</div>
 
-        <!-- Form Name -->
-        <legend>Add Book</legend>
-
-        <!-- Text input-->
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="textinput">Title</label>
-            <div class="col-md-2">
-                <input id="textinput" name="title" type="text" placeholder=""
-                    class="form-control input-md">
-
-            </div>
-        </div>
-        <!-- Text input-->
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="textinput">Publisher</label>
-            <div class="col-md-2">
-                <input id="textinput" name="publishername" type="text" placeholder=""
-                    class="form-control input-md">
-
-            </div>
-        </div>
-
-        <!-- Text input-->
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="textinput">ISBN</label>
-            <div class="col-md-2">
-                <input id="textinput" name="isbn" type="text" placeholder=""
-                    class="form-control input-md">
-
-            </div>
-        </div>
-
-        <!-- Text input-->
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="textinput">Edition</label>
-            <div class="col-md-2">
-                <input id="textinput" name="edition" type="text" placeholder=""
-                    class="form-control input-md">
-
-            </div>
-        </div>
+<form role="form" action="" method="post" name="library" class="form-horizontal">
+	<div class="row">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-3">
+	<a href="{{ request.path }}/add" class="btn btn-primary">Add Book</a>
+	</div>
+	</div>
 
 
-        <!-- Button -->
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-2">
-                <button type="submit" name="save" class="btn btn-success">ADD</button>
-            </div>
-        </div>
+	<ul class="list-unstyled">
+	{% for book in library %}
+		<li>
+		<input type="checkbox" name="library_to_delete" value=" {{ book[0] }} " />
+		<a href="{{ url_for('book_page', id= book[0]  )}}">  {{ book[1] }} </a>
+		</li>
+	{% endfor %}
 
+	</ul>
 
-    </fieldset>
+	{% if library %}
+		<button type="submit" name="delete" class="btn btn-primary">Delete</button>
+	{% endif %}
 </form>
-<form role="form" action="" method="get" name="list_book" class="form-horizontal"class="form-horizontal">
-    <fieldset>
-
-        <!-- Form Name -->
-        <legend>List All Book</legend>
-
-        <ul>
-            <br>
-            <div class="col-md-2">
-            <li><b style="color:#000000">Title:</b></li>
-            {% for book in books %}
-                <b>-</b> <a style="color:#CC0000" href="{{ url_for('library_page', id=id )}}" title="Click for details">{{ book[1] }}</a>
-                <br>
-            {% endfor %}
-            </div>
-            <div class="col-md-3">
-            <li><b style="color:#000000">Edition:</b></li>
-            {% for book in books %}
-                <b>-</b> <a style="color:#CC0000" href="{{ url_for('library_page', id=id )}}" title="Click for details">{{ book[3] }}</a>
-                <br>
-            {% endfor %}
-            </div>
-            <div class="col-md-4">
-            <li><b style="color:#000000">Publisher:</b></li>
-            {% for book in books %}
-                <b>-</b> <a style="color:#CC0000" href="{{ url_for('library_page', id=id )}}" title="Click for details">{{ book[6] }}</a>
-                <br>
-            {% endfor %}
-            </div>
-        </ul>
-
-    </fieldset>
-</form>
-
-
 
 {% endblock %}

@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block title %}Book Edit{% endblock %}
+{% block content %}
+<div class="page-header">
+	<h1>Add Book</h1>
+</div>
+
+<form role="form" action="" method="post" name="book_add" class="form-→horizontal">
+
+	<div class="form-group">
+		<label for="name" class="control-label col-sm-1">Title:</label>
+		<div class="col-sm-11">
+			<input type="text" name="title" value="{{ form['title'] }}" class="form-control"" required autofocus />
+		</div>
+	</div>
+{% if is_add %}
+	<div class="form-group">
+		<label for="publishername" class="control-label col-sm-1">Publisher:</label>
+			<div class="col-sm-3">
+				<input type="text" name="publishername" value="{{ form['publishername'] }}" class="form-control" " />
+			</div>
+	</div>
+{% endif %}
+<div class="form-group">
+	<label for="isbn" class="control-label col-sm-1">isbn:</label>
+		<div class="col-sm-3">
+			<input type="text" name="isbn" value="{{ form['isbn'] }}" class="form-control" " />
+		</div>
+</div>
+<div class="form-group">
+	<label for="edition" class="control-label col-sm-1">edition:</label>
+		<div class="col-sm-3">
+			<input type="text" name="edition" value="{{ form['edition'] }}" class="form-control" " />
+		</div>
+</div>
+
+<div class="form-group">
+	<div class="col-sm-1"></div>
+		<button type="submit" name="save" class="btn btn-primary">Save</button>
+	</div>
+
+</form>
+{% endblock %}

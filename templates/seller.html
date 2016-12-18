@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}Seller{% endblock %}
+{% block content %}
+<div class="page-header">
+<h1>Book: {{book[1]}}</h1>
+</div>
+
+<body>
+<div class="row">
+<div  class="col-sm-1">Seller:</div>
+<div  class="col-sm-3">{{ seller[1] }}</div>
+</div>
+
+<div class="row">
+<div  class="col-sm-1">Price:</div>
+<div  class="col-sm-3">{{ seller[2] }}</div>
+</div>
+
+<div class="row">
+<div  class="col-sm-1">Type:</div>
+<div  class="col-sm-3">{{ seller[3] }}</div>
+</div>
+
+
+
+<div class="row">
+<div class="col-sm-1"></div>
+<div class="col-sm-3">
+<a href="{{ request.path }}/edit" class="btn btn-primary">Edit</a>
+</div>
+</div>
+</body>
+{% endblock %}

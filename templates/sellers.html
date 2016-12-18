@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Seller List{% endblock %}
+{% block content %}
+	<div class="page-header">
+	<h1>List of the Selling Books</h1>
+	</div>
+
+<form role="form" action="" method="post" name="library" class="form-horizontal">
+	<div class="row">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-3">
+	<a href="{{ request.path }}/add" class="btn btn-primary">Add New Bookseller</a>
+	</div>
+	</div>
+
+
+	<ul class="list-unstyled">
+	{% for seller in sellers %}
+		<li>
+		<a href="{{ url_for('seller_page', s_isbn= seller[0]  )}}"> {{ seller[5] }}</a>
+		</li>
+	{% endfor %}
+
+	</ul>
+
+
+</form>
+
+{% endblock %}
