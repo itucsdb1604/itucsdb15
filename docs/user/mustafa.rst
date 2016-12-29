@@ -2,7 +2,8 @@ Parts Implemented by Mustafa Furkan Süve
 ========================================
 1.1.   Homepage
 ---------------
-.. figure:: /images/mustafa/homepage.png
+
+.. figure:: mustafa/homepage.png
     :alt: home page
     :align: center
 
@@ -10,7 +11,8 @@ This is the page I created using the layout. This is the homepage. There are the
 
 1.2.   User Area
 ----------------
-.. figure:: /images/mustafa/messagelist.png
+
+.. figure:: mustafa/messagelist.png
     :alt: message list
     :align: center
 
@@ -19,37 +21,38 @@ Users can also follow or unfollow other users by clicking the “Follow-Unfollow
 
 1.3.   Message List and Messages
 --------------------------------
-.. figure:: /images/mustafa/newmessage.png
+
+.. figure:: mustafa/newmessage.png
     :alt: new message
     :align: center
 
 After clicking “Add New Message” button, this page comes. User gives the name of the Message List and clicks Add. Then the page shown below comes.
 
-.. figure:: /images/mustafa/messageboard.png
+.. figure:: mustafa/messageboard.png
     :alt: messageboard
     :align: center
 
 This is the Message Board for the Message List that the user has just created. User can enter new messages here.
 
-.. figure:: /images/mustafa/messageboard2.png
+.. figure:: mustafa/messageboard2.png
     :alt: messageboard
     :align: center
 
 This is how the Message Board looks when the user adds new messages. User can change the content of a message by clicking the “Update” button next to it. User can also delete a message by clicking the “Delete” button next to it.
 
-.. figure:: /images/mustafa/updatemessage.png
+.. figure:: mustafa/updatemessage.png
     :alt: update message
     :align: center
 
 This is the page when the user click the “Update” button next to a message. Users can enter the new content of the message here. Then click “Update” to update the content of the message.
 
-.. figure:: /images/mustafa/deletemessage.png
+.. figure:: mustafa/deletemessage.png
     :alt: update message
     :align: center
 
 This is the pop-up window comes when the user tries to delete a mesage. If the user clicks “Yes” button, the message will be deleted, otherwise it will not.
 
-.. figure:: /images/mustafa/messagelist2.png
+.. figure:: mustafa/messagelist2.png
     :alt: message list
     :align: center
 
@@ -57,7 +60,7 @@ This is how the area of a user looks when he adds a new Message List. All of his
 Users can also delete a Message List by clicking the text “-Delete” under it. It will delete the Message List with the messages in it from the database.
 Message Lists’ names can be changed as well by clicking the text “-Update” under it.
 
-.. figure:: /images/mustafa/updatemessagelist.png
+.. figure:: mustafa/updatemessagelist.png
     :alt: message list
     :align: center
 
@@ -65,13 +68,14 @@ When the user clicks “-Update”, this page comes. User can enter a new name f
 
 1.4.   Following and Unfollowing
 --------------------------------
-.. figure:: /images/mustafa/follow.png
+
+.. figure:: mustafa/follow.png
     :alt: follow
     :align: center
 
 In the signup page, when the user clicks “Follow-Unfollow” button in his area, this page comes. User clicks the chechbox that is next to the users that he wants to follow, then click “Follow” button.
 
-.. figure:: /images/mustafa/unfollow.png
+.. figure:: mustafa/unfollow.png
     :alt: unfollow
     :align: center
 
@@ -81,14 +85,14 @@ For example, if User1 follows User2 and User3, the text “Unfollow” appears n
 --------------------
 After a user follows another user, followed user gets a notification saying that a user has followed him.
 
-.. figure:: /images/mustafa/notifications.png
+.. figure:: mustafa/notifications.png
     :alt: notifications
     :align: center
 
 The notifications of a user can be seen by clicking the “Notifications” button on the top right of the user’s area. The numbers of the notifications that a user got is shown in that button.
 If the followed user adds, deletes or updates a Message List or a Message; a notification will be sent to the user that follows him for each operation.
 
-.. figure:: /images/mustafa/notifications2.png
+.. figure:: mustafa/notifications2.png
     :alt: notifications
     :align: center
 
