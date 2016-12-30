@@ -28,8 +28,7 @@ Now the book is being displayed in the library part:
 .. figure:: tolga/bookadd2.png
     :alt: book add2
     :align: center
-    :width: 640px
-    :height: 400px
+    :scale: 50 %
 
 Profile Page
 ------------
@@ -39,13 +38,11 @@ As it can bee seen below, the user name, profile information, a little picture o
 .. figure:: tolga/booklist.png
     :alt: booklist
     :align: center
-    :width: 640px
-    :height: 400px
+    :scale: 50 %
 
 Whenever user reads a book, he/she can add it to the list of his read books. By entering the information needed, and clicking "Add" button, the new read book is going to be displayed on the middle side of the page.
 
 .. figure:: tolga/booklist2.png
     :alt: booklist2
     :align: center
-    :width: 640px
-    :height: 400px
+    :scale: 50 %
