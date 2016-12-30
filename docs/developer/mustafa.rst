@@ -1,4 +1,4 @@
-Parts Implemented by Mustafa Furkan Süve
+Parts Implemented by Mustafa Furkan Suve
 ========================================
 
 When the first time the website released, we need to initialize our database which is creating the tables and insert the initial values into them. To do this, we need to call initialize_database function. After creating the other tables, this function calls initMustafaTables function to create my tables.
