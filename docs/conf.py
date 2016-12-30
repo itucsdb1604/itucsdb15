@@ -44,7 +44,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'itucsdb1604'
+project = 'IBDB'
 copyright = '2016, itucsdb1604'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -185,6 +185,7 @@ htmlhelp_basename = 'itucsdb1604doc'
 latex_elements = {
 # The paper size ('letterpaper' or 'a4paper').
 'papersize': 'a4paper',
+'figure_align': 'H',
 
 # The font size ('10pt', '11pt' or '12pt').
 #'pointsize': '10pt',
@@ -198,7 +199,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
   ('index', 'itucsdb1604.tex', 'itucsdb1604 Documentation',
-   'itucsdb1604', 'manual'),
+   'IBDB', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -228,7 +229,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'itucsdb1604', 'itucsdb1604 Documentation',
-     ['itucsdb1604'], 1)
+     ['IBDB'], 1)
 ]
 
 # If true, show URL addresses after external links.

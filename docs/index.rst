@@ -20,7 +20,8 @@ IBDB(Internet Book Database) is a social media for readers where people can mana
 Contents:
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
+   :numbered:
 
    installation/index
    user/index

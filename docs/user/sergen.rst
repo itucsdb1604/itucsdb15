@@ -1,8 +1,8 @@
 Parts Implemented by Sergen Kayıkcı
 ===================================
 
-4.1.   Categories
------------------
+Categories
+----------
 
 .. figure:: sergen/categories.png
     :alt: home page
@@ -22,8 +22,8 @@ This is add category page. By writing a name, selecting a feature and then click
 
 This is category page. On this page name and feature of category are shown. Furthermore, writers which writes on this category are shown as links to their writer page. By clicking edit button, the category can be edited.
 
-4.2.   Writers
---------------
+Writers
+-------
 
 .. figure:: sergen/writers.png
     :alt: home page
@@ -43,8 +43,8 @@ This is add writer page. By writing a name and age, selecting a category from da
 
 This is writer page. On this page name and age of writer are shown. Furthermore, category that the writer writes on and awards that the writer won are shown as links to their category and award page. By clicking edit button, the writer can be edited.
 
-4.3.   Awards
--------------
+Awards
+------
 
 .. figure:: sergen/awards.png
     :alt: home page

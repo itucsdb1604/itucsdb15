@@ -1,7 +1,7 @@
 Parts Implemented by Mustafa Furkan Süve
 ========================================
-1.1.   Homepage
----------------
+Homepage
+--------
 
 .. figure:: mustafa/homepage.png
     :alt: home page
@@ -9,8 +9,8 @@ Parts Implemented by Mustafa Furkan Süve
 
 This is the page I created using the layout. This is the homepage. There are the announcements on the right taken from the Announcements table that I created.
 
-1.2.   User Area
-----------------
+User Area
+---------
 
 .. figure:: mustafa/messagelist.png
     :alt: message list
@@ -19,8 +19,8 @@ This is the page I created using the layout. This is the homepage. There are the
 After adding a user from the signup page, the area shown above can be opened by clicking the users name. Users can add Message Lists by clicking The “Add New Message List” button.
 Users can also follow or unfollow other users by clicking the “Follow-Unfollow” button.
 
-1.3.   Message List and Messages
---------------------------------
+Message List and Messages
+-------------------------
 
 .. figure:: mustafa/newmessage.png
     :alt: new message
@@ -66,8 +66,8 @@ Message Lists’ names can be changed as well by clicking the text “-Update”
 
 When the user clicks “-Update”, this page comes. User can enter a new name for the Message List and click “Update” button to apply the changes.
 
-1.4.   Following and Unfollowing
---------------------------------
+Following and Unfollowing
+-------------------------
 
 .. figure:: mustafa/follow.png
     :alt: follow
@@ -81,8 +81,8 @@ In the signup page, when the user clicks “Follow-Unfollow” button in his are
 
 For example, if User1 follows User2 and User3, the text “Unfollow” appears next to them for User1 to be able to unfollow them. If the user unfollows another user, then the checkbox comes again instead of “Unfollow” text.
 
-1.5.   Notifications
---------------------
+Notifications
+-------------
 After a user follows another user, followed user gets a notification saying that a user has followed him.
 
 .. figure:: mustafa/notifications.png

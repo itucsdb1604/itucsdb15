@@ -1,8 +1,8 @@
 Parts Implemented by Mehmet Taha Çorbacıoğlu
 ============================================
 
-2.1. Sign Up Page
------------------
+Sign Up Page
+------------
 
 When user click Sign Up below page is opened. User can create new user by entering username and password. User can also select user type which are admin, member and guest.
 
@@ -11,8 +11,10 @@ When user click Sign Up below page is opened. User can create new user by enteri
     :align: center
 
 
-2.2 User List
--------------
+User List
+---------
+
+In this page
 .. figure:: taha/userlist.png
     :alt: user list
     :align: center
@@ -26,8 +28,8 @@ When user click Sign Up below page is opened. User can create new user by enteri
     :alt: user update
     :align: center
 
-2.3 Admin Settings
-------------------
+Admin Settings
+--------------
 
 .. figure:: taha/adminlogin.png
     :alt: admin login
