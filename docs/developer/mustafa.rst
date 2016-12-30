@@ -134,7 +134,30 @@ If the user wants to follow someone we get all the ids of the users to follow th
     """ % (id ,userName)
     cursor.execute(query)
 
+Unfollow
+--------
+User can unfollow the users that he followed. The query that is used to do this is below;
 
+.. code-block:: python
+
+    query = """DELETE FROM FOLLOW 
+                WHERE(FOLLOWER_ID = %s AND FOLLOWED_ID = %s)
+            """ % (follower_id, followed_id)
+    cursor.execute(query)
+    
+    query="""SELECT USERNAME FROM USERS
+                WHERE(ID = %s)
+            """ % follower_id
+    cursor.execute(query)
+    userName = cursor.fetchone()
+    userName = userName[0]
+    
+    query = """
+            INSERT INTO NOTIFICATION VALUES(%s, '%s has unfollowed you.')
+            """ % (followed_id ,userName)
+    cursor.execute(query)
+
+ 
 Message Board
 -------------
 To select the messages and put it on the website we used this query;
