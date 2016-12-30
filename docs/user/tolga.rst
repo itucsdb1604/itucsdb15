@@ -28,7 +28,7 @@ Now the book is being displayed in the library part:
 .. figure:: tolga/bookadd2.png
     :alt: book add2
     :align: center
-    :scale: 75 %
+    :scale: 50 %
 
 Profile Page
 ------------

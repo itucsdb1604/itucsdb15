@@ -83,7 +83,8 @@ userList function writes user's information to the sign up page.
            cursor.execute(query)
 
            connection.commit()
-       return render_template('signup.html', users = u, lists = l, notifications = n, notification_count = cursor.fetchall())
+       return render_template('signup.html', users = u, lists = l,
+       notifications = n, notification_count = cursor.fetchall())
 
 signUp function collects information with text boxes and send them to database.
 
@@ -95,7 +96,8 @@ signUp function collects information with text boxes and send them to database.
        type = int(request.form['type'])
        with dbapi2.connect(app.config['dsn']) as connection:
            cursor = connection.cursor()
-           query = "INSERT INTO USERS VALUES('%s', '%s', '28.11.2016', %d)" % (username, password, type)
+           query = "INSERT INTO USERS VALUES('%s', '%s', '28.11.2016', %d)" %
+           (username, password, type)
            cursor.execute(query)
            connection.commit()
        return redirect(url_for('signup_page'))
