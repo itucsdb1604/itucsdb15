@@ -1,5 +1,5 @@
-Parts Implemented by Member Name
-================================
+Parts Implemented by Mehmet Taha Çorbacıoğlu
+============================================
 
 Initialize User and User Type Tables
 ------------------------------------
