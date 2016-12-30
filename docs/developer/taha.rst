@@ -1,6 +1,10 @@
 Parts Implemented by Member Name
 ================================
 
+Initialize User and User Type Tables
+------------------------------------
+
+When user visit localhost:5000/initdb, then program initialize tables by using below code.
 
 .. code-block:: python
 
@@ -20,6 +24,8 @@ Parts Implemented by Member Name
    query = """INSERT INTO USERSTYPES VALUES(2, 'Guest', FALSE, FALSE)"""
    cursor.execute(query)
 
+User types inserted in begining because these are predefined by system. After user types are created then user table is created.
+
 .. code-block:: python
 
    query = """DROP TABLE IF EXISTS USERS CASCADE"""
@@ -33,6 +39,11 @@ Parts Implemented by Member Name
               FOREIGN KEY (typeid) REFERENCES USERSTYPES(id) ON DELETE RESTRICT )"""
    cursor.execute(query)
 
+Sign Up
+-------
+
+When user visit sign up page then below code works and run userlist function. If POST method is working then depend on the operation signup or delete function runs.
+
 .. code-block:: python
 
    def handleSignUp():
@@ -43,6 +54,8 @@ Parts Implemented by Member Name
                return signUp()
            elif 'delete' in request.form:
                return deleteUser()
+
+userList function writes user's information to the sign up page.
 
 .. code-block:: python
 
@@ -72,6 +85,8 @@ Parts Implemented by Member Name
            connection.commit()
        return render_template('signup.html', users = u, lists = l, notifications = n, notification_count = cursor.fetchall())
 
+signUp function collects information with text boxes and send them to database.
+
 .. code-block:: python
 
    def signUp():
@@ -84,6 +99,8 @@ Parts Implemented by Member Name
            cursor.execute(query)
            connection.commit()
        return redirect(url_for('signup_page'))
+
+deleteUser function works depend on the button it deletes user in database.
 
 .. code-block:: python
 
@@ -98,6 +115,8 @@ Parts Implemented by Member Name
 
            connection.commit()
        return redirect(url_for('signup_page'))
+
+In user list when user click update button then userEdit function works and update user information depend on which user is selected
 
 .. code-block:: python
 
@@ -118,6 +137,12 @@ Parts Implemented by Member Name
                connection.commit()
            return redirect(url_for('signup_page'))
 
+
+Admin Settings
+--------------
+
+If admin is signed then admin setting page becomes active. In admin setting page userTypesList function runs and list user types. Depend on the user types update and delete functions work for that type.
+
 .. code-block:: python
 
    def handleAdminSetting():
@@ -137,6 +162,8 @@ Parts Implemented by Member Name
            elif 'guest_delete' in request.form:
                return guestDelete()
 
+userTypesList function works like userList function but list user types.
+
 .. code-block:: python
 
    def userTypeList():
@@ -148,6 +175,8 @@ Parts Implemented by Member Name
 
                connection.commit()
        return render_template('adminsettings.html', types = cursor.fetchall())
+
+Update and delete function work for selected type and update function collect information for that type and change for database.
 
 .. code-block:: python
 
