@@ -338,3 +338,25 @@ that list.
     
     query = "DELETE FROM MESSAGE_LISTS WHERE(ID = %s)" % listID
     cursor.execute(query)
+
+Showing Notifications and Message Lists
+---------------------------------------
+Finally, when a user wants to see his notifications or his message lists, he opens the signup page. when this page is called, it should have parameter such as notificaitons, notification counts and message lists. Since all of the users is shown in the same page, we should take the information of all users. The query that does this is given below;
+
+.. code-block:: python
+
+    query = "SELECT * FROM MESSAGE_LISTS ORDER BY ID"
+    cursor.execute(query)
+
+    l = cursor.fetchall()
+
+    query = "SELECT * FROM NOTIFICATION"
+    cursor.execute(query)
+    n = cursor.fetchall()
+
+    query = """SELECT USER_ID, COUNT(USER_ID) FROM NOTIFICATION
+                 GROUP BY USER_ID
+            """
+    cursor.execute(query)
+
+The first query selects the message lists. The second one selects all the notifications. The third one selects the userid and the number of notifications that user has.
