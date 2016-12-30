@@ -157,7 +157,65 @@ User can unfollow the users that he followed. The query that is used to do this 
             """ % (followed_id ,userName)
     cursor.execute(query)
 
- 
+Notification Delete
+-------------------
+When a user wants to delete his notifications, this code will run.
+
+.. code-block:: python
+
+    query = """DELETE FROM NOTIFICATION
+                    WHERE(ID = %s)
+            """ % id
+    cursor.execute(query)
+
+Getting Notifications
+---------------------
+Whenever a user is followed or unfollowed by another user, the followed one gets a notidication.
+Furthermore, if the followed user does an operation regarding messages and message lists,
+the follower will get a notification about that operation.
+
+.. code-block:: python
+
+    query="""SELECT USER_ID FROM MESSAGE_LISTS
+                WHERE (ID = %s)""" % listID
+    cursor.execute(query)
+    userID = cursor.fetchone()
+    userID = userID[0]
+    
+    query="""SELECT USERNAME FROM USERS
+                WHERE (ID = %s)""" % userID
+    cursor.execute(query)
+    userName = cursor.fetchone()
+    userName = userName[0]
+
+    query = """
+    SELECT FOLLOWER_ID FROM FOLLOW
+        WHERE(FOLLOWED_ID = %s)
+    """ % userID
+    cursor.execute(query)
+    followers = cursor.fetchall()
+    
+    query="""SELECT NAME FROM MESSAGE_LISTS
+                WHERE (ID = %s)""" % listID
+    cursor.execute(query)
+    listName = cursor.fetchone()
+    listName = listName[0]
+    
+    for followerid in followers:
+        query = """
+        INSERT INTO NOTIFICATION VALUES(%s, '%s has sent a new message to ''%s'' list')
+        """ % (followerid[0] ,userName, listName)
+        cursor.execute(query)
+
+This is the code that notificate the users. In this process we first
+get the userID and the userName. Then by using the userID, we get all
+the users that is following the user having that userID. Then we get
+the list name for the content of the notification. Finally we give
+notification to all users that follows him.
+
+This process is repeated in all the functions related to messages,
+message lists, follow and unfollow.
+
 Message Board
 -------------
 To select the messages and put it on the website we used this query;
