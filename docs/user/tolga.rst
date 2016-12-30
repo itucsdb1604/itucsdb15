@@ -38,11 +38,11 @@ As it can bee seen below, the user name, profile information, a little picture o
 .. figure:: tolga/booklist.png
     :alt: booklist
     :align: center
-    :scale: 75 %
+    :scale: 50 %
 
 Whenever user reads a book, he/she can add it to the list of his read books. By entering the information needed, and clicking "Add" button, the new read book is going to be displayed on the middle side of the page.
 
 .. figure:: tolga/booklist2.png
     :alt: booklist2
     :align: center
-    :scale: 75 %
+    :scale: 50 %
