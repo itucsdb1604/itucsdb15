@@ -222,4 +222,119 @@ To select the messages and put it on the website we used this query;
 
 .. code-block:: python
 
+    query = """SELECT * FROM MESSAGES
+                WHERE (LIST_ID = %s)
+    ORDER BY ID""" % listID
+    cursor.execute(query)
 
+    messages = cursor.fetchall()
+    
+When a user enters a new message to a message list this query will run
+and insert that message to the table.
+
+.. code-block:: python
+
+    message = request.form['message']
+    query = """INSERT INTO MESSAGES VALUES(%s, '%s')""" % (listID, message)
+    cursor.execute(query)
+
+Message Delete
+--------------
+When a user wants to delete a message, this query will run and delete the message
+that has the id of *id*.
+
+.. code-block:: python
+
+	query = "DELETE FROM MESSAGES WHERE(ID = %d)" % id
+	cursor.execute(query)
+
+Message Update
+--------------
+If a user wants to change the content of a message, he enters the new message
+and send it to this query with the id of that message;
+
+.. code-block:: python
+
+    query = """
+    UPDATE MESSAGES
+        SET TEXT = '%s'
+        WHERE (ID = %d)
+    """ % (request.form['message'], id)
+    cursor.execute(query)
+
+List Update
+-----------
+Users can change their lists' names too. In the code given below, before updating
+the list, we store its name to show it in the notificaiton. Then we update the list.
+
+.. code-block:: python
+
+    query="""SELECT NAME FROM MESSAGE_LISTS
+                    WHERE (ID = %s)""" % listID
+    cursor.execute(query)
+    listName = cursor.fetchone()
+    oldListName = listName[0]
+    
+We got the old name, now we can update it.
+
+.. code-block:: python
+
+    query = """
+    UPDATE MESSAGE_LISTS
+        SET NAME = '%s'
+        WHERE (ID = %s)
+    """ % (request.form['name'], listID)
+    cursor.execute(query)
+
+Adding List
+-----------
+To add a new message list we run this query below. We
+get the list name from the form.
+
+.. code-block:: python
+
+    query = """
+    INSERT INTO MESSAGE_LISTS VALUES(%s, '%s')
+    """ % (userID ,request.form['list_name'])
+    cursor.execute(query)
+
+
+Then we get the id of that new message list to redirect 
+the user to the message board of the new message list 
+as that page requires the listID information. Since we 
+used *Serial* data type for id, we can get userID to use
+to add notifications with the following query;
+
+.. code-block:: python
+
+    query = "SELECT CURRVAL('MESSAGE_LISTS_ID_SEQ')"
+    cursor.execute(query)
+    listID = cursor.fetchone()
+    listID = listID[0]
+    
+*Currval* will give us the id of the last inserted
+element.
+
+Delete List
+-----------
+In this process, we again save the listName and userID
+like we do when we are adding list. Then we can delete that
+list. Delete operation will also delete the messages inside 
+that list.
+
+.. code-block:: python
+
+    query="""SELECT NAME FROM MESSAGE_LISTS
+                WHERE (ID = %s)""" % listID
+    cursor.execute(query)
+    listName = cursor.fetchone()
+    listName = listName[0]
+
+    query="""SELECT USER_ID FROM MESSAGE_LISTS
+            WHERE (ID = %s)""" % listID
+    cursor.execute(query)
+    userID = cursor.fetchone()
+    userID = userID[0]
+    
+    query = "DELETE FROM MESSAGE_LISTS WHERE(ID = %s)" % listID
+    cursor.execute(query)
