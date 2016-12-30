@@ -9,57 +9,70 @@ When user click Sign Up below page is opened. User can create new user by enteri
 .. figure:: taha/signup.png
     :alt: sign up
     :align: center
-    :scale: 100 %
+    :scale: 50 %
 
 
 User List
 ---------
 
-In this page
+In this page signed user is listed.
 
 .. figure:: taha/userlist.png
     :alt: user list
     :align: center
-    :scale: 100 %
+    :scale: 50 %
 
+Below page shows their name, sign date and user type can be looked in list.
 
 .. figure:: taha/userinformation.png
     :alt: user information
     :align: center
-    :scale: 100 %
+    :scale: 50 %
+
+By clicking update button in user information send you to update page. User's username and password can be changed in there.
 
 .. figure:: taha/userupdate.png
     :alt: user update
     :align: center
-    :scale: 100 %
+    :scale: 50 %
 
 Admin Settings
 --------------
 
+If an admin is signed then below their information admin setting button is active.
+
 .. figure:: taha/adminlogin.png
     :alt: admin login
     :align: center
-    :scale: 100 %
+    :scale: 50 %
+
+But if member or guest is signed then they cannot access the admin settings.
 
 .. figure:: taha/memberlogin.png
     :alt: member login
     :align: center
-    :scale: 100 %
+    :scale: 50 %
+
+In admin settings page, admin can see user types which are listed.
 
 .. figure:: taha/adminsettings.png
     :alt: admin settings
     :align: center
-    :scale: 100 %
+    :scale: 50 %
+
+Admin can see which user type has rights to read and write.
 
 .. figure:: taha/userproperties.png
     :alt: user properties
     :align: center
-    :scale: 100 %
+    :scale: 50 %
+
+If admin wants to change their permission below the page change and delete user type permissions.
 
 .. figure:: taha/userproupdate.png
     :alt: user properties update
     :align: center
-    :scale: 100 %
+    :scale: 50 %
 
 
 
