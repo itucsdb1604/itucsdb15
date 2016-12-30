@@ -3,19 +3,19 @@ Parts Implemented by Mustafa Furkan Süve
 Homepage
 ^^^^^^^^
 	
-	.. _homepage 
+	.. _homepage:
 	.. figure:: mustafa/homepage.png
 	    :alt: home page
 	    :align: center
 	    :scale: 75 %
 
-:numref: 'homepage' is the page I created using the layout. This is the homepage. There are the announcements 
+:numref: `homepage` is the page I created using the layout. This is the homepage. There are the announcements 
 on the right taken from the Announcements table that I created.
 
 User Area
 ^^^^^^^^
 
-	.. _userarea
+	.. _userarea:
 	.. figure:: mustafa/messagelist.png
 	    :alt: message list
 	    :align: center
@@ -28,7 +28,7 @@ Users can also follow or unfollow other users by clicking the "Follow-Unfollow" 
 Message List and Messages
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-	.. _newmessage
+	.. _newmessage:
 	.. figure:: mustafa/newmessage.png
 	    :alt: new message
 	    :align: center
@@ -37,7 +37,7 @@ Message List and Messages
 After clicking "Add New Message" button, the page in :numref: 'newmessage' comes. User gives the name of the 
 Message List and clicks Add. Then the page shown below comes.
 
-	.. _messageboard
+	.. _messageboard:
 	.. figure:: mustafa/messageboard.png
 	    :alt: messageboard
 	    :align: center
@@ -46,7 +46,7 @@ Message List and clicks Add. Then the page shown below comes.
 :numref: 'messageboard' is the Message Board for the Message List that the user has just created. User can 
 enter new messages here.
 
-	.. _messageboard2
+	.. _messageboard2:
 	.. figure:: mustafa/messageboard2.png
 	    :alt: messageboard
 	    :align: center
@@ -56,7 +56,7 @@ enter new messages here.
 content of a message by clicking the "Update" button next to it. User can also delete a 
 message by clicking the "Delete" button next to it.
 
-	.. _updatemessage
+	.. _updatemessage:
 	.. figure:: mustafa/updatemessage.png
 	    :alt: update message
 	    :align: center
@@ -66,7 +66,7 @@ message by clicking the "Delete" button next to it.
 :numref: 'updatemessage' is the page when the user click the "Update" button next to a message. Users can enter 
 the new content of the message here. Then click "Update" to update the content of the message.
 
-	.. _deletemessage
+	.. _deletemessage:
 	.. figure:: mustafa/deletemessage.png
 	    :alt: update message
 	    :align: center
@@ -76,7 +76,7 @@ the new content of the message here. Then click "Update" to update the content o
 :numref: 'deletemessage' is the pop-up window comes when the user tries to delete a mesage. If the user clicks 
 "Yes" button, the message will be deleted, otherwise it will not.
 
-	.. _messagelist2
+	.. _messagelist2:
 	.. figure:: mustafa/messagelist2.png
 	    :alt: message list
 	    :align: center
@@ -89,7 +89,7 @@ Users can also delete a Message List by clicking the text "-Delete" under it. It
 the Message List with the messages in it from the database.
 Message Lists' names can be changed as well by clicking the text "-Update" under it.
 
-	.. _updatemessagelist
+	.. _updatemessagelist:
 	.. figure:: mustafa/updatemessagelist.png
 	    :alt: message list
 	    :align: center
@@ -101,7 +101,7 @@ and click "Update" button to apply the changes.
 Following and Unfollowing
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-	.. _follow
+	.. _follow:
 	.. figure:: mustafa/follow.png
 	    :alt: follow
 	    :align: center
@@ -110,7 +110,7 @@ Following and Unfollowing
 In the signup page, when the user clicks "Follow-Unfollow" button in his area, the page in :numref: 'follow' comes. 
 User clicks the chechbox that is next to the users that he wants to follow, then click "Follow" button.
 
-	.. _unfollow
+	.. _unfollow:
 	.. figure:: mustafa/unfollow.png
 	    :alt: unfollow
 	    :align: center
@@ -122,7 +122,7 @@ Notifications
 ^^^^^^^^^^^^^
 After a user follows another user, followed user gets a notification saying that a user has followed him.
 
-	.. _notification
+	.. _notification:
 	.. figure:: mustafa/notifications.png
 	    :alt: notifications
 	    :align: center
@@ -131,7 +131,7 @@ After a user follows another user, followed user gets a notification saying that
 The notifications of a user can be seen by clicking the "Notifications" button on the top right of the user's area. The numbers of the notifications that a user got is shown in that button.
 If the followed user adds, deletes or updates a Message List or a Message; a notification will be sent to the user that follows him for each operation.
 
-	.. _ notification2
+	.. _ notification2:
 	.. figure:: mustafa/notifications2.png
 	    :alt: notifications
 	    :align: center
