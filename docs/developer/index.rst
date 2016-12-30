@@ -12,6 +12,7 @@ There is the Relation Diagram of our Book Database in the next page.
 .. figure:: database.jpg
     :alt: database scheme
     :align: center
+    :scale: 75 %
 
 Code
 ----
