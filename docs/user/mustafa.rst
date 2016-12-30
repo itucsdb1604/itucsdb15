@@ -115,4 +115,4 @@ The notifications of a user can be seen by clicking the "Notifications" button o
     :align: center
     :scale: 65 %
 
-When a "Notification" button is clicked, this windows pops.
+When a "Notification" button is clicked, this windows pops. Users can see and delete their notifications here.
