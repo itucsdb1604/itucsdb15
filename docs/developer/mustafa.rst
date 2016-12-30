@@ -14,6 +14,7 @@ Tables that I created:
 Initializing
 ------------
 First we drop and re-create the announcements table then insert the announcements with the code given below;
+
 .. code-block:: python
 
 	query = """DROP TABLE IF EXISTS ANNOUNCEMENTS"""
@@ -35,6 +36,7 @@ First we drop and re-create the announcements table then insert the announcement
 	cursor.execute(query)
 	
 After that, we create the message lists table;
+
 .. code-block:: python
 
 	query = """DROP TABLE IF EXISTS MESSAGE_LISTS CASCADE"""
@@ -49,6 +51,7 @@ After that, we create the message lists table;
 	cursor.execute(query)
 	
 This table has a foreign key referencing to the users table on id attribute. This key holds which user is that message list assign to. When a user is deleted, all of his message lists will be deleted as well.
+
 .. code-block:: python
 
     query = """DROP TABLE IF EXISTS MESSAGES"""
@@ -63,6 +66,7 @@ This table has a foreign key referencing to the users table on id attribute. Thi
     cursor.execute(query)
 
 Then we create the message table whic has a foreign key list_id referencing to the message list table on id attribute. This key holds the id of the message list of that message. When a message list is deleted, all of the message in it will be deleted as well.
+
 .. code-block:: python
             
 	query = """DROP TABLE IF EXISTS FOLLOW"""
@@ -77,6 +81,7 @@ Then we create the message table whic has a foreign key list_id referencing to t
 	)"""
 	cursor.execute(query)
 After that, we create the follow table which holds the id of the followed user and the follower. Primary key is both the ids combined since a user can not follow someone twice. Follower_id and followed_id is the foreign keys of this table referencing users table on id attribute. Moreover, when a user is deleted, all of the “follow” informations of him is deleted as well.
+
 .. code-block:: python
 
 	query = """DROP TABLE IF EXISTS NOTIFICATION"""
@@ -116,6 +121,7 @@ When the follow page is called, we first select all the users to show them to th
 If the user wants to follow someone we get all the ids of the users to follow then insert them into the follow table. Finally we send a notification to the followed user.
 
 .. code-block:: python
+
 	ids = request.form.getlist('user_ids')
     for id in ids:
     query="""
